@@ -7,13 +7,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
  * @author H. Lackinger
  */
 public class Repository {
-
+    
+    
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("evsPU");
+    EntityManager em = emf.createEntityManager();
+    
     //Singleton
     private static Repository instance = null;
     LinkedList<Equipment> eList = new LinkedList<>();
@@ -32,11 +39,17 @@ public class Repository {
     
     public void add(Equipment equ){
         eList.add(equ);
+        em.getTransaction().begin(); //Starts a transaction with the database
+        em.persist(equ); //pushing the Object into DataBase
+        em.getTransaction().commit(); //Finished with pushing
     }
     
     
-    public LinkedList<Equipment> getEquipment() {
-        return eList;
+    public List<Equipment> getEquipment() {
+        return em.createNamedQuery("Equipment.findAll", Equipment.class)
+                .getResultList();
+        
+        
     }
     
     

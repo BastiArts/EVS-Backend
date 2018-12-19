@@ -1,20 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 
 /**
- *
  * @author Manuel Fadljevic
  */
 @Entity
+@NamedQuery(name="Equipment.findAll", query="SELECT e FROM Equipment e")
 public class Equipment {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
     String category;
     String name; //750 D
@@ -25,7 +24,8 @@ public class Equipment {
     String[] usableClasses;
     int price;
     String photoPath;
-    String specs;
+    String specs; /*What makes the Equipment special (24 Megapixel) and what 
+                    is included with this Equipment(SD-Card, Akku, ...)*/
 
     public Equipment() {
     }

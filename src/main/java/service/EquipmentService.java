@@ -71,7 +71,7 @@ public class EquipmentService {
     @Path("find")
     public String findAll(){
     //public LinkedList<Equipment> findAll()
-        LinkedList<Equipment> eList = repo.getEquipment();
+        List<Equipment> eList = repo.getEquipment();
         String ausgabe = "";
         for (Equipment e : eList) {
             ausgabe += e.getDisplayname() + "<br>";
