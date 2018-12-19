@@ -1,5 +1,9 @@
 package service;
-
+/*
+GIT INFORMATIONS
+1. COMMIT WITH COMMIT Message --> write what has been done or what works
+2. PUSH Program under Git -> Remote -> Push...
+*/
 import entity.Equipment;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -8,9 +12,17 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 
+/*
+This Class is for the Web Orientation
+f.e.: https://localhost/rest/evs/message
+*/
 @Path("evs")
-public class UserService {
+public class EquipmentService {
     
+    /*
+    * Gets an instance of the Class Repository where all Data is put and pulled
+    * in and from the database (List in current version)
+    */
     Repository repo = Repository.getInstance();;
 
     // Show message 
@@ -21,6 +33,8 @@ public class UserService {
         return "EVS-Server powered by JAVA SE!";
     }
     
+    
+    //Initialise some Data
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("init")
@@ -49,19 +63,21 @@ public class UserService {
         repo.add(e6);
         repo.add(e7);
         repo.add(e8);
-        
         return "Equipment is inizialised! ";
     }
     
+    //sends a LinkedList<Equipment> --> all data from database
     @GET
     @Path("find")
-    public String getEquipment(){
+    public String findAll(){
+    //public LinkedList<Equipment> findAll()
         LinkedList<Equipment> eList = repo.getEquipment();
         String ausgabe = "";
         for (Equipment e : eList) {
             ausgabe += e.getDisplayname() + "<br>";
         }
-        return ausgabe;      
+        return ausgabe;
+        //return repo.getEquipment();
     }
     
     
