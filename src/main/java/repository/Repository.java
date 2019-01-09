@@ -70,4 +70,22 @@ public class Repository {
         return em.createNamedQuery("evs_user.findAll", User.class)
                 .getResultList();
     }
+
+    /*
+    * Function to make sure the user on the front end uses correct username
+    * and password for login into EVS
+    */
+    public String proofLogin(String username, String password) {
+        List<User> userList = em
+                .createNamedQuery("evs_user.findAll", User.class)
+                .getResultList();
+        
+        for(User u : userList){
+            if(u.getUsername().equals(username) 
+                    && u.getHashedPassword().equals(password)){
+                return "Welcome user: " + username;
+            }
+        }
+        return "You did wrong dude";
+    }
 }

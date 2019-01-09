@@ -85,13 +85,7 @@ public class EquipmentService {
         
         repo.add(e);
         return e;
-    }    
-    
-    /**********************************************************
-    **********************************************************
-       ALL WHERE USER TEST DATAS ARE GENERATED AND EMPLOYED
-    **********************************************************
-    **********************************************************/
+    }
     
     /*
     Gets a List of all existing Users and merge them into a big String to send
@@ -107,7 +101,6 @@ public class EquipmentService {
         }
         return ausgabe;
     }
-    
     
     /*
     Initializes some Test Data into the Database to test the whole process
@@ -125,6 +118,16 @@ public class EquipmentService {
         return "Users are initialized!";
     }
     
-    
+    /*
+    * Login Path with parameters to proof if the username and password is the
+    * same as the username and password from the school
+    */
+    @GET
+    @Path("login")
+    public String login(
+            @QueryParam("user") String username,
+            @QueryParam("pwd") String password){
+        return repo.proofLogin(username, password);
+    }
     
 }
