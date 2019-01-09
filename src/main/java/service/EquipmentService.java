@@ -56,8 +56,10 @@ public class EquipmentService {
     }
     
     
-    
-    //sends a LinkedList<Equipment> --> all data from database
+    /*
+    Gets a List of all existing equipment from the database to send it to
+    the Front-End as a big String
+    */
     @GET
     @Path("find")
     public String findAll(){
@@ -71,7 +73,10 @@ public class EquipmentService {
         //return repo.getEquipment();
     }
     
-    
+    /*
+    Gets an equipment from the Front-End (or testing applications) and inserts
+    it into the database
+    */
     @POST
     @Path("insert")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -87,6 +92,11 @@ public class EquipmentService {
        ALL WHERE USER TEST DATAS ARE GENERATED AND EMPLOYED
     **********************************************************
     **********************************************************/
+    
+    /*
+    Gets a List of all existing Users and merge them into a big String to send
+    this String to the Front-End
+    */
     @GET
     @Path("findUser")
     public String findUser(){
@@ -98,6 +108,11 @@ public class EquipmentService {
         return ausgabe;
     }
     
+    
+    /*
+    Initializes some Test Data into the Database to test the whole process
+    of controlling username and password and stuff.
+    */
     @GET
     @Path("initUser")
     public String initUser(){
@@ -109,5 +124,7 @@ public class EquipmentService {
         repo.add(u2);
         return "Users are initialized!";
     }
+    
+    
     
 }

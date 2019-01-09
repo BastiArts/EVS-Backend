@@ -33,23 +33,26 @@ public class Repository {
         return instance;
     }
     
-    
+    /*
+    * Starts a transaction to communicate with the database and persists
+    * an Object into the database. Finally a commit happens to make sure the
+    * Object is pushing up into database
+    */
     public void add(Object o){
-        //eList.add((Equipment) o);
         em.getTransaction().begin(); //Starts a transaction with the database
         em.persist(o); //pushing the Object into DataBase
         em.getTransaction().commit(); //Finished with pushing
     }
     
-    
+    /*
+    * Is the same as:
+    * SELECT e FROM evs_equipment e
+    * This command gets all elements of Equipment.class in a List from database
+    */
     public List<Equipment> getEquipment() {
-        /*Select e from Equipment e --> Gets all elements from class Equipment
-        * out of Database */
         return em.createNamedQuery("Equipment.findAll", Equipment.class)
                 .getResultList();
     }
-    
-    
     
     public Equipment insert(Equipment e) {
         em.getTransaction().begin();
@@ -57,27 +60,11 @@ public class Repository {
         em.getTransaction().commit();
         return e;
     }
-         
-/**********************************************************
-    **********************************************************
-       ALL WHERE USER TEST DATAS ARE GENERATED AND EMPLOYED
-    **********************************************************
-     * @return p
-    **********************************************************/
     
-/*
-    public String proofUser(User user) {
-        
-        List<User> userList = em.createNamedQuery("User.findAll", User.class)
-                .getResultList();
-        
-        if(userList.contains(user)){
-            return "User found! " + user.getUsername();
-        }else{
-            return "No user found!";
-        }
-        
-    }
+    /*
+    * Is the same as:
+    * SELECT u FROM evs_user u
+    * This command gets all elements of User.class in a List from database
     */
     public List<User> getUsers() {
         return em.createNamedQuery("evs_user.findAll", User.class)

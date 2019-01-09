@@ -32,6 +32,10 @@ public class User implements Serializable {
         this.hashedPassword = hashedPassword;
     }
     
+    /*
+    * Just some Getter and Setter for all existing fields in this class
+    * to make sure JPA can change and get the data correct from the server
+    */
     public String getUsername() {
         return username;
     }
