@@ -1,27 +1,32 @@
 package entity;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Manuel Fadljevic
  */
-@Entity
-@NamedQuery(name="Equipment.findAll", query="SELECT e FROM Equipment e")
-public class Equipment {
+@XmlRootElement
+@Entity(name="evs_equipment")
+@NamedQuery(name="Equipment.findAll", query="SELECT e FROM evs_equipment e")
+public class Equipment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
     String category;
     String name; //750 D
     String brand; //Canon
+    @Transient
     String displayname; //brand + name
     String interneNummer;
     String serielNumber; //F33 for example
-    String[] usableClasses;
+    String usableClasses;
     int price;
     String photoPath;
     String specs; /*What makes the Equipment special (24 Megapixel) and what 
@@ -30,7 +35,7 @@ public class Equipment {
     public Equipment() {
     }
 
-    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, int price, String photoPath, String specs) {
+    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String usableClasses, int price, String photoPath, String specs) {
         this.category = category;
         this.name = name;
         this.brand = brand;
@@ -108,11 +113,11 @@ public class Equipment {
         this.serielNumber = serielNumber;
     }
 
-    public String[] getUsableClasses() {
+    public String getUsableClasses() {
         return usableClasses;
     }
 
-    public void setUsableClasses(String[] usableClasses) {
+    public void setUsableClasses(String usableClasses) {
         this.usableClasses = usableClasses;
     }
 

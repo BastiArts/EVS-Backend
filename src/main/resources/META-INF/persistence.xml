@@ -3,12 +3,14 @@
   <persistence-unit name="evsPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>entity.Equipment</class>
+    <class>entity.User</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/equipmentEVS"/>
       <property name="javax.persistence.jdbc.user" value="manuel"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
       <property name="javax.persistence.jdbc.password" value="manuel"/>
       <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+      <property name="eclipselink.logging.level" value="fine"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -1,10 +1,7 @@
 package repository;
 
 import entity.Equipment;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import entity.User;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -37,103 +34,53 @@ public class Repository {
     }
     
     
-    public void add(Equipment equ){
-        eList.add(equ);
+    public void add(Object o){
+        //eList.add((Equipment) o);
         em.getTransaction().begin(); //Starts a transaction with the database
-        em.persist(equ); //pushing the Object into DataBase
+        em.persist(o); //pushing the Object into DataBase
         em.getTransaction().commit(); //Finished with pushing
     }
     
     
     public List<Equipment> getEquipment() {
+        /*Select e from Equipment e --> Gets all elements from class Equipment
+        * out of Database */
         return em.createNamedQuery("Equipment.findAll", Equipment.class)
                 .getResultList();
+    }
+    
+    
+    
+    public Equipment insert(Equipment e) {
+        em.getTransaction().begin();
+        em.persist(e);
+        em.getTransaction().commit();
+        return e;
+    }
+         
+/**********************************************************
+    **********************************************************
+       ALL WHERE USER TEST DATAS ARE GENERATED AND EMPLOYED
+    **********************************************************
+     * @return p
+    **********************************************************/
+    
+/*
+    public String proofUser(User user) {
         
+        List<User> userList = em.createNamedQuery("User.findAll", User.class)
+                .getResultList();
+        
+        if(userList.contains(user)){
+            return "User found! " + user.getUsername();
+        }else{
+            return "No user found!";
+        }
         
     }
-    
-    
-    
-
-    /*List of Person
-    LinkedList<Person> person = new LinkedList<>(); //Funktioniert wegen (siehe oben) import entity.Person
-
-    String csvFile = "rest.csv";
-    BufferedReader br = null;
-    String line = "";
-
-    public void loadFromFile() throws FileNotFoundException, IOException {
-
-        br = new BufferedReader(new FileReader(csvFile));
-        while ((line = br.readLine()) != null) {
-            String[] p = line.split(";");
-
-            person.add(new Person(Integer.parseInt(p[0]),
-                    p[1],
-                    p[2],
-                    p[3],
-                    p[4],
-                    p[5],
-                    Integer.parseInt(p[6]),
-                    Boolean.parseBoolean(p[7])
-            ));
-        }
+    */
+    public List<User> getUsers() {
+        return em.createNamedQuery("evs_user.findAll", User.class)
+                .getResultList();
     }
-    
-    
-    
-    
-
-    public List<Person> find() {
-        return person;
-    }
-    
-    
-    
-    public List<Person> find(int page, int size){
-        LinkedList<Person> pHelp = new LinkedList<>();
-        
-        for (int i = 0; i < person.size(); i++) {
-            if(i >= (page-1)*size && i < page*size){
-                pHelp.add(person.get(i));
-            }
-        }
-        return pHelp;
-    }
-    
-    
-
-    public void insert(Person p) {
-        person.add(p);
-    }
-
-    public void delete(long id) {
-        /*for (int i = 0; i < person.size(); i++) {
-            if(id == person.get(i).getId()){
-                person.remove(i);
-            }
-        }*//*
-        person.removeIf((person) -> person.getId() == id);
-    }
-
-    public Person update(Person p, long id) {
-        boolean found = false;
-        for (int i = 0; i < person.size(); i++) {
-            if (id == person.get(i).getId()) {
-                this.person.set(i, p);
-                found = true;
-            }
-        }
-        if (!found) {
-            person.add(p);
-        }
-        return p;
-    }
-    
-    public int count(){
-        return person.size();
-    }*/
-
-    
-    
 }

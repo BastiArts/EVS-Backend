@@ -1,3 +1,6 @@
+/************************/
+/*      VERSION 1.3     */
+/************************/
 package service;
 /*
 GIT INFORMATIONS
@@ -11,6 +14,7 @@ import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
+import entity.User;
 
 /*
 This Class is for the Web Orientation
@@ -39,32 +43,19 @@ public class EquipmentService {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("init")
     public String init() {
+        Equipment e0 = new Equipment("camera", "Fadljevic", "Manuel", "FF2223", "LMAO222", "4AHITM,5AHITM", 1000, "photopath", "lol");
+        e0.setDisplayname(e0.getBrand() + " " + e0.getName());
         Equipment e1 = new Equipment("camera", "Z12", "Canon");
         e1.setDisplayname(e1.getBrand() + " " + e1.getName());
         Equipment e2 = new Equipment("mikro", "MX75", "Rode");
         e2.setDisplayname(e2.getBrand() + " " + e2.getName());
-        Equipment e3 = new Equipment("mikro", "470F", "Rode");
-        e3.setDisplayname(e3.getBrand() + " " + e3.getName());
-        Equipment e4 = new Equipment("camera", "Eos 650D", "Canon");
-        e4.setDisplayname(e4.getBrand() + " " + e4.getName());
-        Equipment e5 = new Equipment("camcorder", "Scheisshaufn", "Canon");
-        e5.setDisplayname(e5.getBrand() + " " + e5.getName());
-        Equipment e6 = new Equipment("camera", "Black Magic", "Sony");
-        e6.setDisplayname(e6.getBrand() + " " + e6.getName());
-        Equipment e7 = new Equipment("mikro", "Kraken", "Razor");
-        e7.setDisplayname(e7.getBrand() + " " + e7.getName());
-        Equipment e8 = new Equipment("camera", "GH5 4K", "Lumix");
-        e8.setDisplayname(e8.getBrand() + " " + e8.getName());
         repo.add(e1);
         repo.add(e2);
-        repo.add(e3);
-        repo.add(e4);
-        repo.add(e5);
-        repo.add(e6);
-        repo.add(e7);
-        repo.add(e8);
-        return "Equipment is inizialised! ";
+        repo.add(e0);
+        return "Equipment is initialized! ";
     }
+    
+    
     
     //sends a LinkedList<Equipment> --> all data from database
     @GET
@@ -81,46 +72,42 @@ public class EquipmentService {
     }
     
     
-    /*
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("findAll")
-    public List<Person> find() throws IOException {
-        return Repository.getInstance().find();
-    }
-    
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("find")
-    public List<Person> find(@QueryParam("page") int page,
-                             @QueryParam("size") int size) throws IOException{
-        return Repository.getInstance().find(page, size);
-    }
-    
-    
     @POST
     @Path("insert")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void insert(Person p) throws IOException{
-        Repository.getInstance().insert(p);
-    }
+    public Equipment insert(Equipment e){
+        e.setDisplayname(e.getBrand() + " " + e.getName());
+        
+        repo.add(e);
+        return e;
+    }    
     
-    @DELETE
-    @Path("delete/{id}")
-    public void delete(@PathParam("id") long id) throws IOException{
-        Repository.getInstance().delete(id);
-    }
-    
-    @PUT
-    @Path("update/{id}")
-    public void update(@PathParam("id") long id, Person p) throws IOException{
-        Repository.getInstance().update(p, id);
+    /**********************************************************
+    **********************************************************
+       ALL WHERE USER TEST DATAS ARE GENERATED AND EMPLOYED
+    **********************************************************
+    **********************************************************/
+    @GET
+    @Path("findUser")
+    public String findUser(){
+        List<User> uList = repo.getUsers();
+        String ausgabe = "";
+        for(User u : uList){
+            ausgabe += u.getUsername() + "<br>";
+        }
+        return ausgabe;
     }
     
     @GET
-    @Path("count")
-    public String count() throws IOException{
-        return "{\"count\":"+Repository.getInstance().count()+"}";
+    @Path("initUser")
+    public String initUser(){
+        System.out.println("hello there");
+        
+        User u1 = new User("it150160", "mypwd");
+        User u2 = new User("it150156", "password");
+        repo.add(u1);
+        repo.add(u2);
+        return "Users are initialized!";
     }
-    */
+    
 }
