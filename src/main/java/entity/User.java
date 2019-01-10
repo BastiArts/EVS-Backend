@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Fadljevic Manuel
+ * @author M. Fadljevic
  */
 @Entity(name="evs_user")
 @NamedQuery(name="evs_user.findAll", query="SELECT u FROM evs_user u")

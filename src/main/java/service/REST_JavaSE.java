@@ -11,7 +11,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 public class REST_JavaSE {
   
     // Basis URI 
-    public static final String BASE_URI = "http://localhost:8080/rest";
+    public static final String BASE_URI = "http://0.0.0.0:8080/rest";
 
     public static org.glassfish.grizzly.http.server.HttpServer startServer() {
         // Im Package "service" alle Klassen durchsuchen, um REST Services zu finden

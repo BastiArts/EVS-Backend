@@ -2,6 +2,7 @@ package repository;
 
 import entity.Equipment;
 import entity.User;
+import entity.Person;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -10,7 +11,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author H. Lackinger
+ * @author M. Fadljevic
  */
 public class Repository {
     
@@ -75,7 +76,7 @@ public class Repository {
     * Function to make sure the user on the front end uses correct username
     * and password for login into EVS
     */
-    public String proofLogin(String username, String password) {
+    public Person proofLogin(String username, String password) {
         List<User> userList = em
                 .createNamedQuery("evs_user.findAll", User.class)
                 .getResultList();
@@ -83,9 +84,9 @@ public class Repository {
         for(User u : userList){
             if(u.getUsername().equals(username) 
                     && u.getHashedPassword().equals(password)){
-                return "Welcome user: " + username;
+                return new Person(username);
             }
         }
-        return "You did wrong dude";
+        return new Person("Wrong User");
     }
 }

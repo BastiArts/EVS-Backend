@@ -15,10 +15,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import entity.User;
+import entity.Person;
 
 /*
-This Class is for the Web Orientation
-f.e.: https://localhost/rest/evs/message
+* This Class is for the Web Orientation
+* f.e.: https://localhost/rest/evs/message
 */
 @Path("evs")
 public class EquipmentService {
@@ -57,8 +58,8 @@ public class EquipmentService {
     
     
     /*
-    Gets a List of all existing equipment from the database to send it to
-    the Front-End as a big String
+    * Gets a List of all existing equipment from the database to send it to
+    * the Front-End as a big String
     */
     @GET
     @Path("find")
@@ -74,8 +75,8 @@ public class EquipmentService {
     }
     
     /*
-    Gets an equipment from the Front-End (or testing applications) and inserts
-    it into the database
+    * Gets an equipment from the Front-End (or testing applications) and inserts
+    * it into the database
     */
     @POST
     @Path("insert")
@@ -88,8 +89,8 @@ public class EquipmentService {
     }
     
     /*
-    Gets a List of all existing Users and merge them into a big String to send
-    this String to the Front-End
+    * Gets a List of all existing Users and merge them into a big String to send
+    * this String to the Front-End
     */
     @GET
     @Path("findUser")
@@ -103,11 +104,12 @@ public class EquipmentService {
     }
     
     /*
-    Initializes some Test Data into the Database to test the whole process
-    of controlling username and password and stuff.
+    * Initializes some Test Data into the Database to test the whole process
+    * of controlling username and password and stuff.
     */
     @GET
     @Path("initUser")
+    @Produces(MediaType.TEXT_PLAIN)
     public String initUser(){
         System.out.println("hello there");
         
@@ -124,7 +126,8 @@ public class EquipmentService {
     */
     @GET
     @Path("login")
-    public String login(
+    @Produces(MediaType.APPLICATION_JSON)
+    public Person login(
             @QueryParam("user") String username,
             @QueryParam("pwd") String password){
         return repo.proofLogin(username, password);

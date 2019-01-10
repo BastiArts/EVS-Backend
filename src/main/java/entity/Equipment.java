@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Manuel Fadljevic
+ * @author M. Fadljevic
  */
 @XmlRootElement
 @Entity(name="evs_equipment")
