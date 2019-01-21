@@ -1,8 +1,10 @@
 package repository;
 
+import ldap.LdapService;
 import entity.Equipment;
 import entity.User;
 import entity.Person;
+import evs.ldapconnection.EVSBridge;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -15,10 +17,10 @@ import javax.persistence.Persistence;
  */
 public class Repository {
     
+    EVSBridge ldap = EVSBridge.getInstance();
     
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("evsPU");
     EntityManager em = emf.createEntityManager();
-    
     //Singleton
     private static Repository instance = null;
     LinkedList<Equipment> eList = new LinkedList<>();
@@ -76,17 +78,10 @@ public class Repository {
     * Function to make sure the user on the front end uses correct username
     * and password for login into EVS
     */
-    public Person proofLogin(String username, String password) {
-        List<User> userList = em
-                .createNamedQuery("evs_user.findAll", User.class)
-                .getResultList();
+    public boolean proofLogin(String username, String password) {
         
-        for(User u : userList){
-            if(u.getUsername().equals(username) 
-                    && u.getHashedPassword().equals(password)){
-                return new Person(username);
-            }
-        }
-        return new Person("Wrong User");
+        return ldap.login(username, password);
     }
+    
+    
 }

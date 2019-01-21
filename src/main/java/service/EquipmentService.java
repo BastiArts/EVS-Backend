@@ -1,5 +1,5 @@
 /************************/
-/*      VERSION 1.3     */
+/*      VERSION 2.0     */
 /************************/
 package service;
 /*
@@ -127,10 +127,9 @@ public class EquipmentService {
     @GET
     @Path("login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Person login(
+    public boolean login(
             @QueryParam("user") String username,
             @QueryParam("pwd") String password){
         return repo.proofLogin(username, password);
     }
-    
 }
