@@ -1,9 +1,7 @@
 package repository;
 
-import ldap.LdapService;
 import entity.Equipment;
 import entity.User;
-import entity.Person;
 import evs.ldapconnection.EVSBridge;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,18 +66,17 @@ public class Repository {
     * Is the same as:
     * SELECT u FROM evs_user u
     * This command gets all elements of User.class in a List from database
-    */
+    *
     public List<User> getUsers() {
         return em.createNamedQuery("evs_user.findAll", User.class)
                 .getResultList();
     }
 
     /*
-    * Function to make sure the user on the front end uses correct username
-    * and password for login into EVS
+    * proofLogin sends 2 Strings to another Method in LDAP to compare username
+    * and password with the HTL School LDAP (For user login)
     */
     public boolean proofLogin(String username, String password) {
-        
         return ldap.login(username, password);
     }
     

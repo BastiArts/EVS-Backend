@@ -21,21 +21,38 @@ public class User implements Serializable {
     private long id;
     
     private String username;
-    private String hashedPassword;
+    private String firstname;
+    private String lastname;
+    private String schoolclass;
+    private String role;
     
     public User(){
         
     }
 
-    public User(String username, String hashedPassword) {
+    
+    public User(String username, String firstname, String lastname, String schoolclass, String role) {
         this.username = username;
-        this.hashedPassword = hashedPassword;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.schoolclass = schoolclass;
+        this.role = role;
     }
+    
     
     /*
     * Just some Getter and Setter for all existing fields in this class
     * to make sure JPA can change and get the data correct from the server
     */
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -44,20 +61,37 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getHashedPassword() {
-        return hashedPassword;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setHashedPassword(String hashedPassword) {
-        this.hashedPassword = hashedPassword;
-    }
-    
-    public long getId() {
-        return id;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getLastname() {
+        return lastname;
     }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getSchoolclass() {
+        return schoolclass;
+    }
+
+    public void setSchoolclass(String schoolclass) {
+        this.schoolclass = schoolclass;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     
 }
