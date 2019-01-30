@@ -41,7 +41,7 @@ public class EquipmentService {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("msg")
     public String msg(){
-        return "Java SE Server from Users is started...";
+        return "Java SE Server from Equipment is started...";
     }
     
     //Initialise some Data

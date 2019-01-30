@@ -36,7 +36,7 @@ public class EVSBridge {
     final String serverName = "addc01.edu.htl-leonding.ac.at";
     final String baseDN = "ou=HTL,dc=edu,dc=htl-leonding,dc=ac,dc=at";
     final int port = 636;
-          String username;
+    String username;
 
     Hashtable props = new Hashtable();
     SearchControls controls = new SearchControls();
@@ -58,7 +58,8 @@ public class EVSBridge {
      * User verwendet werden. -> Threadsafe
      */
     public boolean login(final String username, final String password) {
-
+        
+        System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\Home\\Mirror\\Schule (HTL-Leonding)\\4.Klasse\\ITP\\EVS\\keystore.bin");
         props.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         props.put(Context.PROVIDER_URL, "ldaps://" + serverName + ":" + port);
         props.put(Context.SECURITY_PRINCIPAL, username + "@" + domainName);
@@ -92,6 +93,7 @@ public class EVSBridge {
                 this.username = username;
                 result = renum.next();
                 context.close();
+                System.out.println(EVSColorizer.GREEN + "Authentification succeeded!" + EVSColorizer.reset());
                 return true;
             }
 

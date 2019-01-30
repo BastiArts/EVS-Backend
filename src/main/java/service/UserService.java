@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import entity.User;
+import evs.ldapconnection.EVSColorizer;
 import jwt.JwtBuilder;
 
 /**
@@ -31,6 +32,7 @@ public class UserService {
     public boolean login(
             @QueryParam("user") String username,
             @QueryParam("pwd") String password){
+        System.out.println(EVSColorizer.RED + "Some data are incomming: " + username + EVSColorizer.reset());
         return repo.proofLogin(username, password);
     }
     
@@ -41,6 +43,13 @@ public class UserService {
         return new JwtBuilder().create("Manuel");
     }
     
+    
+    @GET
+    @Path("msg")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String message(){
+        return "Java SE Server powered by EVS GmbH!";
+    }
     
     
     /*

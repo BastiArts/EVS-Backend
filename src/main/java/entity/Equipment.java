@@ -18,18 +18,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Equipment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    long id;
-    String category;
-    String name; //750 D
-    String brand; //Canon
+    private long id;
+    private String category;
+    private String name; //750 D
+    private String brand; //Canon
     @Transient
-    String displayname; //brand + name
-    String interneNummer;
-    String serielNumber; //F33 for example
-    String usableClasses;
-    int price;
-    String photoPath;
-    String specs; /*What makes the Equipment special (24 Megapixel) and what 
+    private String displayname; //brand + name
+    private String interneNummer;
+    private String serielNumber; //F33 for example
+    private String usableClasses;
+    private int price;
+    private String photoPath;
+    private String specs; /*What makes the Equipment special (24 Megapixel) and what 
                     is included with this Equipment(SD-Card, Akku, ...)*/
 
     public Equipment() {
