@@ -28,7 +28,6 @@ public class UserService {
     */
     @GET
     @Path("login")
-    @Produces(MediaType.APPLICATION_JSON)
     public boolean login(
             @QueryParam("user") String username,
             @QueryParam("pwd") String password){
