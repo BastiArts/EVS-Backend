@@ -34,7 +34,7 @@ public class Repository {
         return instance;
     }
     
-    /*
+    /**
     * Starts a transaction to communicate with the database and persists
     * an Object into the database. Finally a commit happens to make sure the
     * Object is pushing up into database
@@ -45,7 +45,7 @@ public class Repository {
         em.getTransaction().commit(); //Finished with pushing
     }
     
-    /*
+    /**
     * Is the same as:
     * SELECT e FROM evs_equipment e
     * This command gets all elements of Equipment.class in a List from database
@@ -62,7 +62,7 @@ public class Repository {
         return e;
     }
     
-    /*
+    /**
     * Is the same as:
     * SELECT u FROM evs_user u
     * This command gets all elements of User.class in a List from database
@@ -71,10 +71,11 @@ public class Repository {
         return em.createNamedQuery("evs_user.findAll", User.class)
                 .getResultList();
     }
-
-    /*
-    * proofLogin sends 2 Strings to another Method in LDAP to compare username
-    * and password with the HTL School LDAP (For user login)
+    */
+    /**
+    * proofLogin sends 2 Strings to another Method in LDAP to compare 
+    * @param username and
+    * @param password with the HTL School LDAP (For user login)
     */
     public boolean proofLogin(String username, String password) {
         return ldap.login(username, password);

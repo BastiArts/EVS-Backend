@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
-import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -30,7 +29,15 @@ public class User implements Serializable {
         
     }
 
-    
+    /**
+     * Constructor
+     * 
+     * @param username - Username
+     * @param firstname - Firstname of the authenticated User
+     * @param lastname - Lastname -||-
+     * @param schoolclass - e.g. 4AHITM, 3AHITM,...
+     * @param role - Defines if the User is a Student or a Teacher
+     */
     public User(String username, String firstname, String lastname, String schoolclass, String role) {
         this.username = username;
         this.firstname = firstname;

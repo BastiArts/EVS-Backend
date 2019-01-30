@@ -13,9 +13,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author M. Fadljevic
  */
 @XmlRootElement
-@Entity(name="evs_equipment")
-@NamedQuery(name="Equipment.findAll", query="SELECT e FROM evs_equipment e")
+@Entity(name = "evs_equipment")
+@NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
 public class Equipment implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -29,37 +30,58 @@ public class Equipment implements Serializable {
     private String usableClasses;
     private int price;
     private String photoPath;
-    private String specs; /*What makes the Equipment special (24 Megapixel) and what 
+    private String specs;
+
+    /*What makes the Equipment special (24 Megapixel) and what 
                     is included with this Equipment(SD-Card, Akku, ...)*/
 
     public Equipment() {
     }
 
-    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String usableClasses, int price, String photoPath, String specs) {
+    /**
+     * Constructor
+     *
+     * @param category - e.g. Audio, Video, Camera, Gadgets
+     * @param name - Product name
+     * @param brand - The brand of the Product e.g. Fujifilm, Canon, Nikon, ...
+     * @param interneNummer - The internal Equipmentnumber e.g. F20
+     * @param serialNumber - The Serialnumber of the Product
+     * @param usableClasses - Defines the classes, who have access to this
+     * Equipment e.g. 4AHITM, 3AHITM,...
+     * @param price - The price of the Product
+     * @param photoPath - Defines the Path of the stored Thumbnail
+     * @param specs - Is a String, which contains all the useful information
+     * about the Equipment (e.g. Resolution, Crop-Factor,...)
+     */
+    public Equipment(String category, String name, String brand, String interneNummer, String serialNumber, String usableClasses, int price, String photoPath, String specs) {
         this.category = category;
         this.name = name;
         this.brand = brand;
         this.interneNummer = interneNummer;
-        this.serielNumber = serielNumber;
+        this.serielNumber = serialNumber;
         this.usableClasses = usableClasses;
         this.price = price;
         this.photoPath = photoPath;
         this.specs = specs;
     }
 
+    /**
+     * Constructor
+     * 
+     * @param category - e.g. Audio, Video, Camera, Gadgets
+     * @param name - Product name
+     * @param brand - The brand of the Product e.g. Fujifilm, Canon, Nikon, ...
+     */
     public Equipment(String category, String name, String brand) {
         this.category = category;
         this.name = name;
         this.brand = brand;
     }
-    
-    
-    
-    
-    /*
+
+    /**
     * Just some Getter and Setter for all existing fields in this class
     * to make sure JPA can change and get the data correct from the server
-    */
+     */
     public long getId() {
         return id;
     }
@@ -147,9 +169,5 @@ public class Equipment implements Serializable {
     public void setSpecs(String specs) {
         this.specs = specs;
     }
-    
-    
-    
-    
-    
+
 }

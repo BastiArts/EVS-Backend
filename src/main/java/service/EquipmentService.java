@@ -2,7 +2,7 @@
 /*      VERSION 2.0     */
 /************************/
 package service;
-/*
+/**
 GIT INFORMATIONS
 1. COMMIT WITH COMMIT Message --> write what has been done or what works
 2. PUSH Program under Git -> Remote -> Push...
@@ -16,14 +16,14 @@ import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import entity.User;
 
-/*
+/**
 * This Class is for the Web Orientation
 * f.e.: https://localhost/rest/evs/message
 */
 @Path("equipment")
 public class EquipmentService {
     
-    /*
+    /**
     * Gets an instance of the Class Repository where all Data is put and pulled
     * in and from the database (List in current version)
     */
@@ -62,7 +62,7 @@ public class EquipmentService {
     }
     
     
-    /*
+    /**
     * Gets a List of all existing equipment from the database to send it to
     * the Front-End as a big String
     */
@@ -79,7 +79,7 @@ public class EquipmentService {
         //return repo.getEquipment();
     }
     
-    /*
+    /**
     * Gets an equipment from the Front-End (or testing applications) and inserts
     * it into the database
     */

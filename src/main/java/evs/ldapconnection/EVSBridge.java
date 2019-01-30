@@ -12,9 +12,7 @@
  */
 package evs.ldapconnection;
 
-import com.sun.jndi.ldap.LdapCtxFactory;
 import java.util.Hashtable;
-import java.util.Scanner;
 import javax.naming.Context;
 import javax.naming.AuthenticationException;
 import javax.naming.NamingEnumeration;
