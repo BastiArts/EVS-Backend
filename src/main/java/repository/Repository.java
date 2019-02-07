@@ -3,6 +3,9 @@ package repository;
 import entity.Equipment;
 import entity.User;
 import evs.ldapconnection.EVSBridge;
+import evs.ldapconnection.LdapAuthException;
+import evs.ldapconnection.LdapException;
+import evs.ldapconnection.LdapUser;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -16,6 +19,8 @@ import javax.persistence.Persistence;
 public class Repository {
     
     EVSBridge ldap = EVSBridge.getInstance();
+    
+    LdapUser userLdpa;
     
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("evsPU");
     EntityManager em = emf.createEntityManager();
@@ -39,9 +44,9 @@ public class Repository {
     * an Object into the database. Finally a commit happens to make sure the
     * Object is pushing up into database
     */
-    public void add(Object o){
+    public void add(Equipment e){
         em.getTransaction().begin(); //Starts a transaction with the database
-        em.persist(o); //pushing the Object into DataBase
+        em.persist(e); //pushing the Object into DataBase
         em.getTransaction().commit(); //Finished with pushing
     }
     
@@ -77,8 +82,14 @@ public class Repository {
     * @param username and
     * @param password with the HTL School LDAP (For user login)
     */
-    public boolean proofLogin(String username, String password) {
-        return ldap.login(username, password);
+    public boolean proofLogin(String username, String password) throws LdapException, LdapAuthException {
+        try{
+            new LdapUser(username, password.toCharArray());
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+           
     }
     
     

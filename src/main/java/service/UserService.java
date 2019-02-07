@@ -9,6 +9,8 @@ import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
+import evs.ldapconnection.LdapAuthException;
+import evs.ldapconnection.LdapException;
 import jwt.JwtBuilder;
 
 /**
@@ -30,7 +32,7 @@ public class UserService {
     @Path("login")
     public boolean login(
             @QueryParam("user") String username,
-            @QueryParam("pwd") String password){
+            @QueryParam("pwd") String password) throws LdapException, LdapAuthException{
         System.out.println(EVSColorizer.RED + "Some data are incomming: " + username + EVSColorizer.reset());
         return repo.proofLogin(username, password);
     }

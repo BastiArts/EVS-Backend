@@ -18,7 +18,7 @@ import entity.User;
 
 /**
 * This Class is for the Web Orientation
-* f.e.: https://localhost/rest/evs/message
+* f.e.: https://localhost/rest/equipment/msg
 */
 @Path("equipment")
 public class EquipmentService {
@@ -29,13 +29,6 @@ public class EquipmentService {
     */
     Repository repo = Repository.getInstance();;
 
-    // Show message 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("message")
-    public String message() {
-        return "EVS-Server powered by JAVA SE!";
-    }
     
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -44,20 +37,17 @@ public class EquipmentService {
         return "Java SE Server from Equipment is started...";
     }
     
-    //Initialise some Data
+    //Initialise test data
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("init")
     public String init() {
-        Equipment e0 = new Equipment("camera", "Fadljevic", "Manuel", "FF2223", "LMAO222", "4AHITM,5AHITM", 1000, "photopath", "lol");
-        e0.setDisplayname(e0.getBrand() + " " + e0.getName());
         Equipment e1 = new Equipment("camera", "Z12", "Canon");
         e1.setDisplayname(e1.getBrand() + " " + e1.getName());
         Equipment e2 = new Equipment("mikro", "MX75", "Rode");
         e2.setDisplayname(e2.getBrand() + " " + e2.getName());
         repo.add(e1);
         repo.add(e2);
-        repo.add(e0);
         return "Equipment is initialized! ";
     }
     
@@ -92,4 +82,16 @@ public class EquipmentService {
         repo.add(e);
         return e;
     }
+    
+    @POST
+    @Path("insertEquipment")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String insertEquipment(Equipment e){
+        
+        e.setDisplayname(e.getBrand() + " " + e.getName());
+        //repo.add(e);
+        return e.getDisplayname();
+    }
+    
+    
 }
