@@ -82,12 +82,13 @@ public class Repository {
     * @param username and
     * @param password with the HTL School LDAP (For user login)
     */
-    public boolean proofLogin(String username, String password) throws LdapException, LdapAuthException {
+    public User proofLogin(String username, String password) throws LdapException, LdapAuthException {
         try{
-            new LdapUser(username, password.toCharArray());
-            return true;
+            LdapUser lUser = new LdapUser(username, password.toCharArray());            
+            return new User(lUser.getUserId(), lUser.getFirstname(), lUser.getLastname(), lUser.getClassId(), lUser.isStudent());
+            
         }catch (Exception e){
-            return false;
+            return null;
         }
            
     }

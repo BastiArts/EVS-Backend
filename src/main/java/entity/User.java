@@ -23,7 +23,7 @@ public class User implements Serializable {
     private String firstname;
     private String lastname;
     private String schoolclass;
-    private String role;
+    private boolean isStudent;
     
     public User(){
         
@@ -38,12 +38,12 @@ public class User implements Serializable {
      * @param schoolclass - e.g. 4AHITM, 3AHITM,...
      * @param role - Defines if the User is a Student or a Teacher
      */
-    public User(String username, String firstname, String lastname, String schoolclass, String role) {
+    public User(String username, String firstname, String lastname, String schoolclass, boolean isStudent) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.schoolclass = schoolclass;
-        this.role = role;
+        this.isStudent = isStudent;
     }
     
     
@@ -92,13 +92,11 @@ public class User implements Serializable {
         this.schoolclass = schoolclass;
     }
 
-    public String getRole() {
-        return role;
+    public boolean isIsStudent() {
+        return isStudent;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setIsStudent(boolean isStudent) {
+        this.isStudent = isStudent;
     }
-
-    
 }

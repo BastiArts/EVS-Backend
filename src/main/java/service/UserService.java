@@ -30,7 +30,7 @@ public class UserService {
     */
     @GET
     @Path("login")
-    public boolean login(
+    public User login(
             @QueryParam("user") String username,
             @QueryParam("pwd") String password) throws LdapException, LdapAuthException{
         System.out.println(EVSColorizer.RED + "Some data are incomming: " + username + EVSColorizer.reset());
