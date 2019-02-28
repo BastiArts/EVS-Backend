@@ -129,7 +129,6 @@ public final class LdapUser {
       // LDAB-Abfrage schließen
       
         System.out.println(EVSColorizer.GREEN + "User successful authentificated: " + userId + EVSColorizer.reset());
-        System.out.println(this.getClassId() + "  ---  " + this.getFirstname() + "  ---  " + this.getLastname() + "  ---  " + this.getUserId()+ "  ---  " + this.isStudent());
       
       context.close();
     }

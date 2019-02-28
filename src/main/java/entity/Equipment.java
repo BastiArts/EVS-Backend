@@ -31,6 +31,7 @@ public class Equipment implements Serializable {
     private int price;
     private String photoPath;
     private String specs;
+    private String userId;
 
     /*What makes the Equipment special (24 Megapixel) and what 
                     is included with this Equipment(SD-Card, Akku, ...)*/
@@ -170,4 +171,12 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    
 }

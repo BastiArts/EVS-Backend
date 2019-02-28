@@ -3,6 +3,7 @@ package repository;
 import entity.Equipment;
 import entity.User;
 import evs.ldapconnection.EVSBridge;
+import evs.ldapconnection.EVSColorizer;
 import evs.ldapconnection.LdapAuthException;
 import evs.ldapconnection.LdapException;
 import evs.ldapconnection.LdapUser;
@@ -84,14 +85,23 @@ public class Repository {
     */
     public User proofLogin(String username, String password) throws LdapException, LdapAuthException {
         try{
-            LdapUser lUser = new LdapUser(username, password.toCharArray());            
+            LdapUser lUser = new LdapUser(username, password.toCharArray());        
             return new User(lUser.getUserId(), lUser.getFirstname(), lUser.getLastname(), lUser.getClassId(), lUser.isStudent());
-            
+            //return true;
         }catch (Exception e){
+            System.out.println(EVSColorizer.YELLOW + "Nothing happened!" + EVSColorizer.reset());
             return null;
         }
            
     }
     
+    /*
+    public User insertUser(User u){
+        em.getTransaction().begin();
+        em.persist(u);
+        em.getTransaction().commit();
+        return u;
+    }
+    */
     
 }

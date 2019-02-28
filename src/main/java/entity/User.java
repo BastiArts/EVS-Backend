@@ -6,24 +6,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
  *
  * @author M. Fadljevic
  */
-@Entity(name="evs_user")
-@NamedQuery(name="evs_user.findAll", query="SELECT u FROM evs_user u")
-public class User implements Serializable {
+@Entity
+public class User implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    
     private String username;
     private String firstname;
     private String lastname;
     private String schoolclass;
     private boolean isStudent;
+    private String picturePath = "";
     
     public User(){
         
@@ -44,20 +42,7 @@ public class User implements Serializable {
         this.lastname = lastname;
         this.schoolclass = schoolclass;
         this.isStudent = isStudent;
-    }
-    
-    
-    /*
-    * Just some Getter and Setter for all existing fields in this class
-    * to make sure JPA can change and get the data correct from the server
-    */
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+        this.picturePath = "";
     }
 
     public String getUsername() {
@@ -98,5 +83,13 @@ public class User implements Serializable {
 
     public void setIsStudent(boolean isStudent) {
         this.isStudent = isStudent;
+    }
+
+    public String getPicturePath() {
+        return picturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
     }
 }
