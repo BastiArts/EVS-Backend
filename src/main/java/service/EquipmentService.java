@@ -15,6 +15,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import entity.User;
+import evs.ldapconnection.EVSColorizer;
 
 /**
 * This Class is for the Web Orientation
@@ -58,14 +59,14 @@ public class EquipmentService {
     */
     @GET
     @Path("find")
-    public String findAll(){
+    public List<Equipment> findAll(){
     //public LinkedList<Equipment> findAll()
         List<Equipment> eList = repo.getEquipment();
-        String ausgabe = "";
-        for (Equipment e : eList) {
-            ausgabe += e.getDisplayname() + "<br>";
-        }
-        return ausgabe;
+//        String ausgabe = "";
+//        for (Equipment e : eList) {
+//            ausgabe += e.getDisplayname() + "<br>";
+//        }
+        return eList;
         //return repo.getEquipment();
     }
     
@@ -78,25 +79,27 @@ public class EquipmentService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Equipment insert(Equipment e){
         e.setDisplayname(e.getBrand() + " " + e.getName());
-        
-        repo.add(e);
-        return e;
+        System.out.println(EVSColorizer.GREEN + e.getDisplayname() + EVSColorizer.reset());
+        return repo.insert(e);
     }
     
     @POST
     @Path("insertEquipment")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public String insertEquipment(Equipment e){
         
-        e.setDisplayname(e.getBrand() + " " + e.getName());
-        //repo.add(e);
-        return e.getDisplayname();
+        
+        return "Works well";
+//        e.setDisplayname(e.getBrand() + " " + e.getName());
+//        //repo.add(e);
+//        return e.getDisplayname();
     }
     
     /*Equipmet löschen --> wird aus der Datenbank entfernt */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    
+    @Path("deleteEquipment")
     public void delete(Equipment e) {
         repo.delete(e);
     }
@@ -106,7 +109,7 @@ public class EquipmentService {
    /*Eqipment update */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-  
+    @Path("updateEquipment")
     public void update( Equipment e) {
         repo.update(e);
     }

@@ -66,6 +66,20 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
+    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String usableClasses, int price, String photoPath, String specs, String userId) {
+        this.category = category;
+        this.name = name;
+        this.brand = brand;
+        this.interneNummer = interneNummer;
+        this.serielNumber = serielNumber;
+        this.usableClasses = usableClasses;
+        this.price = price;
+        this.photoPath = photoPath;
+        this.specs = specs;
+        this.userId = userId;
+    }
+    
+
     /**
      * Constructor
      * 
