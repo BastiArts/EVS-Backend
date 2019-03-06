@@ -93,5 +93,22 @@ public class EquipmentService {
         return e.getDisplayname();
     }
     
+    /*Equipmet löschen --> wird aus der Datenbank entfernt */
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    
+    public void delete(Equipment e) {
+        repo.delete(e);
+    }
+    
+    
+    
+   /*Eqipment update */
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+  
+    public void update( Equipment e) {
+        repo.update(e);
+    }
     
 }

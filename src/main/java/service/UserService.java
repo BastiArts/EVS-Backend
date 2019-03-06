@@ -1,9 +1,5 @@
 package service;
 
-import entity.Equipment;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
@@ -26,6 +22,11 @@ public class UserService {
     /**
      * Login Path with parameters to proof if the username and password is the
      * same as the username and password from the school
+     * @param username
+     * @param password
+     * @return 
+     * @throws evs.ldapconnection.LdapException 
+     * @throws evs.ldapconnection.LdapAuthException 
      */
     @GET
     @Path("login")
@@ -42,7 +43,7 @@ public class UserService {
         
         
         if (endUser != null) {
-            endUser.setPicturePath(username + "_PB.jpg");
+            //endUser.setPicturePath(username + "_PB.jpg");
             JSONObject json = new JSONObject(endUser);
             System.out.println(json.toString());
             return json.toString();
@@ -64,7 +65,16 @@ public class UserService {
     public String message() {
         return "Java SE Server powered by EVS GmbH!";
     }
-
+    
+    @POST
+    @Path("picturePath")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User setProfilePath(User user){
+        return repo.setProfilePath(user);
+    }
+    
+    
 }
 
 

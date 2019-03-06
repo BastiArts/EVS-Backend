@@ -18,11 +18,11 @@ import javax.persistence.Persistence;
  * @author M. Fadljevic
  */
 public class Repository {
-    
+
     EVSBridge ldap = EVSBridge.getInstance();
-    
+
     LdapUser userLdpa;
-    
+
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("evsPU");
     EntityManager em = emf.createEntityManager();
     //Singleton
@@ -39,62 +39,59 @@ public class Repository {
         }
         return instance;
     }
-    
+
     /**
-    * Starts a transaction to communicate with the database and persists
-    * an Object into the database. Finally a commit happens to make sure the
-    * Object is pushing up into database
-    */
-    public void add(Equipment e){
+     * Starts a transaction to communicate with the database and persists an
+     * Object into the database. Finally a commit happens to make sure the
+     * Object is pushing up into database
+     */
+    public void add(Equipment e) {
         em.getTransaction().begin(); //Starts a transaction with the database
         em.persist(e); //pushing the Object into DataBase
         em.getTransaction().commit(); //Finished with pushing
     }
-    
+
     /**
-    * Is the same as:
-    * SELECT e FROM evs_equipment e
-    * This command gets all elements of Equipment.class in a List from database
-    */
+     * Is the same as: SELECT e FROM evs_equipment e This command gets all
+     * elements of Equipment.class in a List from database
+     */
     public List<Equipment> getEquipment() {
         return em.createNamedQuery("Equipment.findAll", Equipment.class)
                 .getResultList();
     }
-    
+
     public Equipment insert(Equipment e) {
         em.getTransaction().begin();
         em.persist(e);
         em.getTransaction().commit();
         return e;
     }
-    
+
     /**
-    * Is the same as:
-    * SELECT u FROM evs_user u
-    * This command gets all elements of User.class in a List from database
-    *
-    public List<User> getUsers() {
-        return em.createNamedQuery("evs_user.findAll", User.class)
-                .getResultList();
-    }
-    */
+     * Is the same as: SELECT u FROM evs_user u This command gets all elements
+     * of User.class in a List from database
+     *
+     * public List<User> getUsers() { return
+     * em.createNamedQuery("evs_user.findAll", User.class) .getResultList(); }
+     */
     /**
-    * proofLogin sends 2 Strings to another Method in LDAP to compare 
-    * @param username and
-    * @param password with the HTL School LDAP (For user login)
-    */
+     * proofLogin sends 2 Strings to another Method in LDAP to compare
+     *
+     * @param username and
+     * @param password with the HTL School LDAP (For user login)
+     */
     public User proofLogin(String username, String password) throws LdapException, LdapAuthException {
-        try{
-            LdapUser lUser = new LdapUser(username, password.toCharArray());        
+        try {
+            LdapUser lUser = new LdapUser(username, password.toCharArray());
             return new User(lUser.getUserId(), lUser.getFirstname(), lUser.getLastname(), lUser.getClassId(), lUser.isStudent());
             //return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(EVSColorizer.YELLOW + "Nothing happened!" + EVSColorizer.reset());
             return null;
         }
-           
+
     }
-    
+
     /*
     public User insertUser(User u){
         em.getTransaction().begin();
@@ -102,6 +99,27 @@ public class Repository {
         em.getTransaction().commit();
         return u;
     }
-    */
+     */
+    public User setProfilePath(User user) {
+        em.getTransaction().begin();
+        em.merge(user);
+        em.getTransaction().commit();
+        return user;
+    }
     
+    
+    
+    public Equipment delete(Equipment e) {
+        em.getTransaction().begin();
+        em.remove(e);
+        em.getTransaction().commit();
+        return e;
+    }
+
+    public Equipment update(Equipment e) {
+        em.getTransaction().begin();
+        Equipment equ = em.merge(e);
+        em.getTransaction().commit();
+        return equ;
+    }
 }
