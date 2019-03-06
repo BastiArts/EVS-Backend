@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
     <name>EVS_rest_UserServer</name>
     
-     <dependencies>
+    <dependencies>
         
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
@@ -67,18 +67,20 @@
             <version>2.6.4</version>
             <scope>provided</scope>
         </dependency>
-          <dependency>
-               <groupId>io.jsonwebtoken</groupId>
-               <artifactId>jjwt</artifactId>
-               <version>0.9.1</version>
-               <type>jar</type>
-          </dependency>
-          <dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180130</version>
         </dependency>
-     </dependencies> 
+        
+
+    </dependencies> 
     
     
     <properties>

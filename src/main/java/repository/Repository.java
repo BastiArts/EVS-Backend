@@ -92,14 +92,14 @@ public class Repository {
 
     }
 
-    /*
+    
     public User insertUser(User u){
         em.getTransaction().begin();
         em.persist(u);
         em.getTransaction().commit();
         return u;
     }
-     */
+    
     public User setProfilePath(User user) {
         em.getTransaction().begin();
         em.merge(user);

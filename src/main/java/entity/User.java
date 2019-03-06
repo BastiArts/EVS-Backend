@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author M. Fadljevic
  */
-@Entity
+@Entity(name="evs_user")
 public class User implements Serializable{
     @Id
     private String username;

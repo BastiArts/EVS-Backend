@@ -38,12 +38,10 @@ public class UserService {
         
         System.out.println(EVSColorizer.RED + "Some data are incomming: " + username + EVSColorizer.reset());
         User endUser = repo.proofLogin(username, password);
-        //System.out.println(EVSColorizer.PURPLE + endUser.getUsername() + " --- " + endUser.getPicturePath() + " lol" + EVSColorizer.reset());
-        
-        
-        
+       
         if (endUser != null) {
             //endUser.setPicturePath(username + "_PB.jpg");
+            repo.insertUser(endUser);
             JSONObject json = new JSONObject(endUser);
             System.out.println(json.toString());
             return json.toString();
