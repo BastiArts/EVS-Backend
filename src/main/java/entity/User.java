@@ -2,12 +2,7 @@ package entity;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.xml.bind.annotation.XmlRootElement;
-
 
 /**
  *
@@ -19,6 +14,7 @@ public class User implements Serializable{
     private String username;
     private String firstname;
     private String lastname;
+    private String email;
     private String schoolclass;
     private boolean isStudent;
     private String picturePath = "";
@@ -92,4 +88,13 @@ public class User implements Serializable{
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
 }

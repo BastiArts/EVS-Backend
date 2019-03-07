@@ -16,19 +16,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity(name = "evs_equipment")
 @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
 public class Equipment implements Serializable {
-
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    long id;
     private String category;
     private String name; //750 D
     private String brand; //Canon
     @Transient
     private String displayname; //brand + name
-    @Id
     private String interneNummer;
     private String serielNumber; //F33 for example
     private String[] usableClasses;
     private long price;
     private String photoPath;
-    private String specs;
+    private Detail specs;
     private String userId;
 
     /*What makes the Equipment special (24 Megapixel) and what 
@@ -52,7 +54,7 @@ public class Equipment implements Serializable {
      * @param specs - Is a String, which contains all the useful information
      * about the Equipment (e.g. Resolution, Crop-Factor,...)
      */
-    public Equipment(String category, String name, String brand, String interneNummer, String serialNumber, String[] usableClasses, long price, String photoPath, String specs) {
+    public Equipment(String category, String name, String brand, String interneNummer, String serialNumber, String[] usableClasses, long price, String photoPath, Detail specs) {
         this.category = category;
         this.name = name;
         this.brand = brand;
@@ -64,7 +66,7 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
-    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, String specs, String userId) {
+    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, Detail specs, String userId) {
         this.category = category;
         this.name = name;
         this.brand = brand;
@@ -95,6 +97,7 @@ public class Equipment implements Serializable {
     * Just some Getter and Setter for all existing fields in this class
     * to make sure JPA can change and get the data correct from the server
      */
+    
     public String getCategory() {
         return category;
     }
@@ -167,11 +170,11 @@ public class Equipment implements Serializable {
         this.photoPath = photoPath;
     }
 
-    public String getSpecs() {
+    public Detail getSpecs() {
         return specs;
     }
 
-    public void setSpecs(String specs) {
+    public void setSpecs(Detail specs) {
         this.specs = specs;
     }
 

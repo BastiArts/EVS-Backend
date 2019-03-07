@@ -51,6 +51,8 @@ public class EquipmentService {
         e1.setDisplayname(e1.getBrand() + " " + e1.getName());
         Equipment e2 = new Equipment("mikro", "MX75", "Rode");
         e2.setDisplayname(e2.getBrand() + " " + e2.getName());
+        e1.setInterneNummer("HULULULULULULULU");
+        e2.setInterneNummer("MUHAHAHAHAHAHAHA");
         repo.add(e1);
         repo.add(e2);
         return "Equipment is initialized! ";
