@@ -92,23 +92,13 @@ public class Repository {
 
     }
 
-    
-    public User insertUser(User u){
+    public User insertUser(User u) {
         em.getTransaction().begin();
-        em.persist(u);
+        em.merge(u);
         em.getTransaction().commit();
         return u;
     }
-    
-    public User setProfilePath(User user) {
-        em.getTransaction().begin();
-        em.merge(user);
-        em.getTransaction().commit();
-        return user;
-    }
-    
-    
-    
+
     public Equipment delete(Equipment e) {
         em.getTransaction().begin();
         em.remove(e);
@@ -121,5 +111,12 @@ public class Repository {
         Equipment equ = em.merge(e);
         em.getTransaction().commit();
         return equ;
+    }
+
+    public String updateUser(User u) {
+        em.getTransaction().begin();
+        em.merge(u);
+        em.getTransaction().commit();
+        return u.getFirstname() + " " + u.getLastname() + " is updated!";
     }
 }

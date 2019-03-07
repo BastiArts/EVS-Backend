@@ -65,13 +65,31 @@ public class UserService {
     }
     
     @POST
-    @Path("picturePath")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public User setProfilePath(User user){
-        return repo.setProfilePath(user);
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("emailTest")
+    public String insertEmail(String income){
+        
     }
     
+    
+//    @POST
+//    @Path("picturePath")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String setProfilePath(User user){
+//        System.out.println("");
+//        System.out.println(EVSColorizer.CYAN + "HERE WE GO M8" + EVSColorizer.reset());
+//        return repo.updateUser(user);
+//    }
+//    
+//    @POST
+//    @Path("email")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String setEmailOfUser(User u){
+//        return repo.updateUser(u);
+//    }
     
 }
 

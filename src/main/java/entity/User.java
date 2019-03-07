@@ -3,25 +3,25 @@ package entity;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author M. Fadljevic
  */
 @Entity(name="evs_user")
+@XmlRootElement
 public class User implements Serializable{
     @Id
     private String username;
     private String firstname;
     private String lastname;
-    private String email;
+    private String email = "";
     private String schoolclass;
     private boolean isStudent;
     private String picturePath = "";
     
-    public User(){
-        
-    }
+    public User(){}
 
     /**
      * Constructor
@@ -31,7 +31,7 @@ public class User implements Serializable{
      * @param lastname - Lastname -||-
      * @param schoolclass - e.g. 4AHITM, 3AHITM,...
      * @param role - Defines if the User is a Student or a Teacher
-     */
+     */    
     public User(String username, String firstname, String lastname, String schoolclass, boolean isStudent) {
         this.username = username;
         this.firstname = firstname;
@@ -39,6 +39,16 @@ public class User implements Serializable{
         this.schoolclass = schoolclass;
         this.isStudent = isStudent;
         this.picturePath = "";
+    }
+    
+    public User(String username, String firstname, String lastname, String email, String schoolclass, boolean isStudent, String picturePath) {
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.schoolclass = schoolclass;
+        this.isStudent = isStudent;
+        this.picturePath = picturePath;
     }
 
     public String getUsername() {
