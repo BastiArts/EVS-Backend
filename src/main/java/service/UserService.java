@@ -1,5 +1,6 @@
 package service;
 
+import com.google.gson.Gson;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
@@ -22,11 +23,12 @@ public class UserService {
     /**
      * Login Path with parameters to proof if the username and password is the
      * same as the username and password from the school
+     *
      * @param username
      * @param password
-     * @return 
-     * @throws evs.ldapconnection.LdapException 
-     * @throws evs.ldapconnection.LdapAuthException 
+     * @return
+     * @throws evs.ldapconnection.LdapException
+     * @throws evs.ldapconnection.LdapAuthException
      */
     @GET
     @Path("login")
@@ -35,17 +37,17 @@ public class UserService {
     public String login(
             @QueryParam("user") String username,
             @QueryParam("pwd") String password) throws LdapException, LdapAuthException {
-        
+
         System.out.println(EVSColorizer.RED + "Some data are incomming: " + username + EVSColorizer.reset());
         User endUser = repo.proofLogin(username, password);
-       
+
         if (endUser != null) {
             //endUser.setPicturePath(username + "_PB.jpg");
             repo.insertUser(endUser);
             JSONObject json = new JSONObject(endUser);
             System.out.println(json.toString());
             return json.toString();
-        }else{
+        } else {
             return "{}";
         }
     }
@@ -63,36 +65,33 @@ public class UserService {
     public String message() {
         return "Java SE Server powered by EVS GmbH!";
     }
-    
+
+    /**
+     *
+     * @param income
+     * @return
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("emailTest")
     public String insertEmail(String income){
-        
+        Gson gson = new Gson();
+        User u = gson.fromJson(income, User.class);
+        return u.getFirstname();
     }
     
     
-//    @POST
-//    @Path("picturePath")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public String setProfilePath(User user){
-//        System.out.println("");
-//        System.out.println(EVSColorizer.CYAN + "HERE WE GO M8" + EVSColorizer.reset());
-//        return repo.updateUser(user);
-//    }
-//    
-//    @POST
-//    @Path("email")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public String setEmailOfUser(User u){
-//        return repo.updateUser(u);
-//    }
-    
+    @POST
+    @Path("updateUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String setProfilePath(String user){
+        Gson gson = new Gson();
+        User u = gson.fromJson(user, User.class);
+        return repo.updateUser(u);
+    }
 }
-
 
 /*
 
