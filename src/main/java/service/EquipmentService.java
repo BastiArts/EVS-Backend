@@ -1,5 +1,5 @@
 /** ********************* */
-/*      VERSION 2.0     */
+/*      VERSION 3.4     */
 /** ********************* */
 package service;
 
@@ -28,6 +28,10 @@ public class EquipmentService {
      */
     Repository repo = Repository.getInstance();
     
+    /**
+     * Test message for testing if the server is running
+     * @return
+     */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("msg")
@@ -35,7 +39,10 @@ public class EquipmentService {
         return "Java SE Server from Equipment is started...";
     }
 
-    //Initialise test data
+    /**
+     * Some test initialization for equipment
+     * @return
+     */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("init")
@@ -54,6 +61,7 @@ public class EquipmentService {
     /**
      * Gets a List of all existing equipment from the database to send it to the
      * Front-End as a big String
+     * @return 
      */
     @GET
     @Path("find")
@@ -68,6 +76,8 @@ public class EquipmentService {
     /**
      * Gets an equipment from the Front-End (or testing applications) and
      * inserts it into the database
+     * @param e
+     * @return 
      */
     @POST
     @Path("addEquipment")
@@ -80,20 +90,30 @@ public class EquipmentService {
         return equipment.getDisplayname();
     }
 
-    /*Equipmet löschen --> wird aus der Datenbank entfernt */
+    /**
+     * Delete existing equipment out of database
+     * @param e
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("deleteEquipment")
-    public void delete(Equipment e) {
-        repo.delete(e);
+    public void delete(String e) {
+        Gson gson = new Gson();
+        Equipment equ = gson.fromJson(e, Equipment.class);
+        repo.delete(equ);
     }
 
-    /*Eqipment update */
+    /**
+     * Update existing Equipment
+     * @param e
+     */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Path("updateEquipment")
-    public void update(Equipment e) {
-        repo.update(e);
+    public void update(String e) {
+        Gson gson = new Gson();
+        Equipment equ = gson.fromJson(e, Equipment.class);
+        repo.update(equ);
     }
 
 }

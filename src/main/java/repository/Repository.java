@@ -79,14 +79,18 @@ public class Repository {
      *
      * @param username and
      * @param password with the HTL School LDAP (For user login)
+     * @return 
+     * @throws evs.ldapconnection.LdapException
+     * @throws evs.ldapconnection.LdapAuthException
      */
     public User proofLogin(String username, String password) throws LdapException, LdapAuthException {
         try {
             LdapUser lUser = new LdapUser(username, password.toCharArray());
             return new User(lUser.getUserId(), lUser.getFirstname(), lUser.getLastname(), lUser.getClassId(), lUser.isStudent());
             //return true;
-        } catch (Exception e) {
+        } catch (LdapAuthException | LdapException e) {
             System.out.println(EVSColorizer.YELLOW + "Nothing happened!" + EVSColorizer.reset());
+            e.printStackTrace();
             return null;
         }
 

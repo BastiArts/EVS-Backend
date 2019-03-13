@@ -52,6 +52,10 @@ public class UserService {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @GET
     @Path("jwtTest")
     @Produces(MediaType.TEXT_PLAIN)
@@ -59,6 +63,10 @@ public class UserService {
         return new JwtBuilder().create("Manuel");
     }
 
+    /**
+     *
+     * @return
+     */
     @GET
     @Path("msg")
     @Produces(MediaType.TEXT_PLAIN)
