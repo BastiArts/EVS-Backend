@@ -65,23 +65,12 @@ public class UserService {
     public String message() {
         return "Java SE Server powered by EVS GmbH!";
     }
-
+    
     /**
      *
-     * @param income
+     * @param user
      * @return
      */
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("emailTest")
-    public String insertEmail(String income){
-        Gson gson = new Gson();
-        User u = gson.fromJson(income, User.class);
-        return u.getFirstname();
-    }
-    
-    
     @POST
     @Path("updateUser")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -92,16 +81,3 @@ public class UserService {
         return repo.updateUser(u);
     }
 }
-
-/*
-
-System.out.println(EVSColorizer.CYAN + endUser.getFirstname()
-                    + " -- " + endUser.getLastname() + " -- " + endUser.getUsername()
-                    + " -- " + endUser.getSchoolclass() + " -- " + endUser.isIsStudent());
-
-
-return "{\"username\" :  \"" + uname + "\","
-                + " \"firstname\" : " + firstname + "\","
-                + " \"lastname\" : " + lastname + "\","
-                + " \"schoolclass\" : " + schoolclass + "\","
-                + " \"isStudent\" : " + isStudent + "\"}";*/
