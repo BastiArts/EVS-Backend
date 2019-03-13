@@ -84,16 +84,20 @@ public class EquipmentService {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("deleteEquipment")
-    public void delete(Equipment e) {
-        repo.delete(e);
+    public void delete(String e) {
+        Gson gson = new Gson();
+         Equipment equipment = gson.fromJson(e, Equipment.class);
+        repo.delete(equipment);
     }
 
     /*Eqipment update */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Path("updateEquipment")
-    public void update(Equipment e) {
-        repo.update(e);
+    public void update(String e) {
+        Gson gson = new Gson();
+         Equipment equipment = gson.fromJson(e, Equipment.class);
+        repo.update(equipment);
     }
 
 }
