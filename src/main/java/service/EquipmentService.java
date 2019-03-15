@@ -112,8 +112,8 @@ public class EquipmentService {
     @Path("updateEquipment")
     public void update(String e) {
         Gson gson = new Gson();
-        Equipment equ = gson.fromJson(e, Equipment.class);
-        repo.update(equ);
+        Equipment equipment = gson.fromJson(e, Equipment.class);
+        repo.update(equipment);
     }
 
 }

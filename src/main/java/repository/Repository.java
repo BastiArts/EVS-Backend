@@ -60,13 +60,6 @@ public class Repository {
                 .getResultList();
     }
 
-    public Equipment insert(Equipment e) {
-        em.getTransaction().begin();
-        em.persist(e);
-        em.getTransaction().commit();
-        return e;
-    }
-
     /**
      * Is the same as: SELECT u FROM evs_user u This command gets all elements
      * of User.class in a List from database
