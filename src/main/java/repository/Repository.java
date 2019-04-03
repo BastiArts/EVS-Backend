@@ -2,7 +2,6 @@ package repository;
 
 import entity.Equipment;
 import entity.User;
-import evs.ldapconnection.EVSBridge;
 import evs.ldapconnection.EVSColorizer;
 import evs.ldapconnection.LdapAuthException;
 import evs.ldapconnection.LdapException;
@@ -19,7 +18,6 @@ import javax.persistence.Persistence;
  */
 public class Repository {
 
-    EVSBridge ldap = EVSBridge.getInstance();
 
     LdapUser userLdpa;
 
@@ -90,9 +88,14 @@ public class Repository {
     }
 
     public User insertUser(User u) {
-        em.getTransaction().begin();
-        em.merge(u);
-        em.getTransaction().commit();
+        
+        User temp = em.find(User.class, u);
+        System.out.println(temp);
+        
+        
+//        em.getTransaction().begin();
+//        em.merge(u);
+//        em.getTransaction().commit();
         return u;
     }
 

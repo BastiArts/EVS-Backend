@@ -2,17 +2,24 @@ package entity;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author M. Fadljevic
  */
-@Entity(name="evs_user")
+@Entity
+@Table(name = "evs_user")
 @XmlRootElement
-public class User implements Serializable{
+public class User implements Serializable {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String username;
     private String firstname;
     private String lastname;
@@ -20,18 +27,19 @@ public class User implements Serializable{
     private String schoolclass;
     private boolean isStudent;
     private String picturePath = "";
-    
-    public User(){}
+
+    public User() {
+    }
 
     /**
      * Constructor
-     * 
+     *
      * @param username - Username
      * @param firstname - Firstname of the authenticated User
      * @param lastname - Lastname -||-
      * @param schoolclass - e.g. 4AHITM, 3AHITM,...
      * @param role - Defines if the User is a Student or a Teacher
-     */    
+     */
     public User(String username, String firstname, String lastname, String schoolclass, boolean isStudent) {
         this.username = username;
         this.firstname = firstname;
@@ -40,7 +48,7 @@ public class User implements Serializable{
         this.isStudent = isStudent;
         this.picturePath = "";
     }
-    
+
     public User(String username, String firstname, String lastname, String email, String schoolclass, boolean isStudent, String picturePath) {
         this.username = username;
         this.firstname = firstname;
@@ -106,5 +114,12 @@ public class User implements Serializable{
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
