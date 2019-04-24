@@ -42,11 +42,15 @@ public class UserService {
         User endUser = repo.proofLogin(username, password);
 
         if (endUser != null) {
+            Gson gsonObject = new Gson();
+
             //endUser.setPicturePath(username + "_PB.jpg");
+            System.out.println("");
+            System.out.println("This is user: " + endUser.getFirstname());
             repo.insertUser(endUser);
-            JSONObject json = new JSONObject(endUser);
-            System.out.println(json.toString());
-            return json.toString();
+            String retString = gsonObject.toJson(endUser);
+            System.out.println(retString);
+            return retString;
         } else {
             return "{}";
         }

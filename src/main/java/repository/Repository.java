@@ -88,14 +88,14 @@ public class Repository {
     }
 
     public User insertUser(User u) {
+//        
+//        User temp = em.find(User.class, u);
+//        System.out.println(temp);
+//        
         
-        User temp = em.find(User.class, u);
-        System.out.println(temp);
-        
-        
-//        em.getTransaction().begin();
-//        em.merge(u);
-//        em.getTransaction().commit();
+        em.getTransaction().begin();
+        em.merge(u);
+        em.getTransaction().commit();
         return u;
     }
 

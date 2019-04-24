@@ -1,7 +1,5 @@
 package evs.ldapconnection;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.*;
 import javax.naming.*;
 import javax.naming.directory.*;
@@ -72,6 +70,7 @@ public final class LdapUser {
         this.setUserId(userId);
 
         // Zertifikat 
+        //System.setProperty("javax.net.ssl.trustStore", "C:\\Users\\Home\\Mirror\\Schule (HTL-Leonding)\\4.Klasse\\ITP\\EVS\\keystore.bin");
         System.setProperty("javax.net.ssl.trustStore", "/home/server/keystore.bin");
 
         // LDAP-Properties
@@ -127,20 +126,13 @@ public final class LdapUser {
             }
 
             // LDAB-Abfrage schließen
-            System.out.println(EVSColorizer.GREEN + "User successful authentificated: " + userId + EVSColorizer.reset());
+            System.out.println(EVSColorizer.GREEN + "User successful authentificated: " + userId);
+            System.out.println(this.getFirstname() + " " + this.getLastname() + EVSColorizer.reset());
 
             context.close();
         } catch (AuthenticationException a) {
             throw new LdapAuthException("Authentication failed for " + userId);
         } catch (NamingException e) {
-            try {
-                List temp = Files.readAllLines(new File("/home/server/keystore").toPath());
-                for (Object s : temp) {
-                    System.err.println(s.toString());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
             throw new LdapException("Failed to bind to LDAP / get account information: " + e);
         }
     }
