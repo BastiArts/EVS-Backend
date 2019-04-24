@@ -90,6 +90,7 @@ public class UserService {
     public String setProfilePath(String user){
         Gson gson = new Gson();
         User u = gson.fromJson(user, User.class);
-        return repo.updateUser(u);
+        repo.updateUser(u);
+        return gson.toJson(u);
     }
 }
