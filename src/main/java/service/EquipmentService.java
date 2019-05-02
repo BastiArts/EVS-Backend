@@ -48,13 +48,28 @@ public class EquipmentService {
     @Path("init")
     public String init() {
         Equipment e1 = new Equipment("camera", "Z12", "Canon");
-        e1.setDisplayname(e1.getBrand() + " " + e1.getName());
+        e1.setDisplayname(this.setDisplayName(e1));
         Equipment e2 = new Equipment("mikro", "MX75", "Rode");
-        e2.setDisplayname(e2.getBrand() + " " + e2.getName());
-        e1.setInterneNummer("HULULULULULULULU");
-        e2.setInterneNummer("MUHAHAHAHAHAHAHA");
+        e2.setDisplayname(this.setDisplayName(e2));
+        e1.setInterneNummer("F22E2");
+        e2.setInterneNummer("F23E4");
+        
+        Equipment eu1 = new Equipment("video", "Camcorder", "Sony");
+        eu1.setDisplayname(this.setDisplayName(eu1));
+        eu1.setBorrowUser("it150160");
+        Equipment eu2 = new Equipment("camera", "CoolCam", "Ericson");
+        eu2.setDisplayname(this.setDisplayName(eu2));
+        eu2.setBorrowUser("it150178");
+        Equipment eu3 = new Equipment("video", "Camcorder3", "Apple");
+        eu3.setDisplayname(this.setDisplayName(eu3));
+        eu3.setBorrowUser("it150178");
+        
+        
         repo.add(e1);
         repo.add(e2);
+        repo.add(eu1);
+        repo.add(eu2);
+        repo.add(eu3);
         return "Equipment is initialized! ";
     }
 
@@ -72,7 +87,25 @@ public class EquipmentService {
         JSONArray equipments = new JSONArray(eList);
         return equipments.toString();
     }
-
+    
+    @GET
+    @Path("find/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String findUserEquipment(@PathParam("username") String username){
+        List userEquList = repo.getUserEquipment(username);
+        Gson gson = new Gson();
+        return gson.toJson(userEquList);
+    }
+    
+    @GET
+    @Path("findAvailable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String findAvailableEquipment(){
+        List equipment = repo.getAvailableEquipment();
+        Gson gson = new Gson();
+        return gson.toJson(equipment);
+    }
+    
     /**
      * Gets an equipment from the Front-End (or testing applications) and
      * inserts it into the database
@@ -115,5 +148,10 @@ public class EquipmentService {
         Equipment equipment = gson.fromJson(e, Equipment.class);
         repo.update(equipment);
     }
-
+    
+    
+    public String setDisplayName(Equipment e){
+        return e.getBrand() + " " + e.getName();
+    }
+    
 }

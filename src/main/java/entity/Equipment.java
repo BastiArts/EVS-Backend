@@ -5,8 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -14,7 +16,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 */
 @XmlRootElement
 @Entity(name = "evs_equipment")
-@NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
+@NamedQueries({
+    @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e"),
+    @NamedQuery(name = "Equipment.findUserEquipment", query = " SELECT e FROM evs_equipment e WHERE e.userId = :userId"),
+    @NamedQuery(name = "Equipment.available", query = "SELECT e FROM evs_equipment e WHERE e.userId IS NULL")
+})
 public class Equipment implements Serializable {
     
     @Id
@@ -31,7 +37,8 @@ public class Equipment implements Serializable {
     private long price;
     private String photoPath;
     private Detail specs;
-    private String userId;
+    @OneToOne
+    private User borrowUser = null;
 
     /*What makes the Equipment special (24 Megapixel) and what 
                     is included with this Equipment(SD-Card, Akku, ...)*/
@@ -66,7 +73,7 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
-    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, Detail specs, String userId) {
+    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, Detail specs, User userId) {
         this.category = category;
         this.name = name;
         this.brand = brand;
@@ -76,7 +83,7 @@ public class Equipment implements Serializable {
         this.price = price;
         this.photoPath = photoPath;
         this.specs = specs;
-        this.userId = userId;
+        this.borrowUser = userId;
     }
     
 
@@ -178,12 +185,12 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getBorrowUser() {
+        return borrowUser;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setBorrowUser(User borrowUser) {
+        this.borrowUser = borrowUser;
     }
     
 }

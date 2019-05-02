@@ -1,10 +1,8 @@
 package entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.ArrayList;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,6 +23,9 @@ public class User implements Serializable {
     private String schoolclass;
     private boolean isStudent;
     private String picturePath = "";
+
+    @OneToMany(mappedBy = "borrowUser")
+    private ArrayList<Equipment> borrowedEquipment = new ArrayList<>();
 
     public User() {
     }
@@ -113,7 +114,23 @@ public class User implements Serializable {
         this.email = email;
     }
 
-//    public long getId() {
+    public boolean isStudent() {
+        return isStudent;
+    }
+
+    public void setStudent(boolean student) {
+        isStudent = student;
+    }
+
+    public ArrayList<Equipment> getBorrowedEquipment() {
+        return borrowedEquipment;
+    }
+
+    public void setBorrowedEquipment(ArrayList<Equipment> borrowedEquipment) {
+        this.borrowedEquipment = borrowedEquipment;
+    }
+
+    //    public long getId() {
 //        return id;
 //    }
 //

@@ -11,13 +11,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 /**
  *
  * @author M. Fadljevic
  */
 public class Repository {
-
 
     LdapUser userLdpa;
 
@@ -70,14 +70,16 @@ public class Repository {
      *
      * @param username and
      * @param password with the HTL School LDAP (For user login)
-     * @return 
+     * @return
      * @throws evs.ldapconnection.LdapException
      * @throws evs.ldapconnection.LdapAuthException
      */
     public User proofLogin(String username, String password) throws LdapException, LdapAuthException {
         try {
-            LdapUser lUser = new LdapUser(username, password.toCharArray());
-            return new User(lUser.getUserId(), lUser.getFirstname(), lUser.getLastname(), lUser.getClassId(), lUser.isStudent());
+            LdapUser ldapUser = new LdapUser(username, password.toCharArray());
+            User user = new User(ldapUser.getUserId(), ldapUser.getFirstname(), ldapUser.getLastname(), ldapUser.getClassId(), ldapUser.isStudent());
+            System.out.println(user.getUsername() + " hat den Namen: " + user.getFirstname());
+            return user;
             //return true;
         } catch (LdapAuthException | LdapException e) {
             System.out.println(EVSColorizer.YELLOW + "Nothing happened!" + EVSColorizer.reset());
@@ -88,11 +90,6 @@ public class Repository {
     }
 
     public User insertUser(User u) {
-//        
-//        User temp = em.find(User.class, u);
-//        System.out.println(temp);
-//        
-        
         em.getTransaction().begin();
         em.merge(u);
         em.getTransaction().commit();
@@ -118,5 +115,13 @@ public class Repository {
         em.merge(u);
         em.getTransaction().commit();
         return u.getFirstname() + " " + u.getLastname() + " is updated!";
+    }
+
+    public List getUserEquipment(String username) {
+        return em.createNamedQuery("Equipment.findUserEquipment").setParameter("userId", username).getResultList();
+    }
+    
+    public List getAvailableEquipment(){
+        return em.createNamedQuery("Equipment.available").getResultList();
     }
 }
