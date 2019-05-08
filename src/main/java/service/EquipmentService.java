@@ -9,6 +9,7 @@ package service;
  */
 import com.google.gson.Gson;
 import entity.Equipment;
+import entity.User;
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -54,19 +55,28 @@ public class EquipmentService {
         e1.setInterneNummer("F22E2");
         e2.setInterneNummer("F23E4");
         
+        User user1 = new User("it150160", "Manuel", "Fadljevic", "4AHITM", true);
+        User user2 = new User("it150178", "Sebastian", "Schiefermayr", "4AHITM", true);
+        User teacher = new User("it150158", "Julian", "Dannigner", "4AHITM", false);
+        
+        
+        
         Equipment eu1 = new Equipment("video", "Camcorder", "Sony");
         eu1.setDisplayname(this.setDisplayName(eu1));
-        eu1.setBorrowUser("it150160");
+        eu1.setBorrowUser(user1);
         Equipment eu2 = new Equipment("camera", "CoolCam", "Ericson");
         eu2.setDisplayname(this.setDisplayName(eu2));
-        eu2.setBorrowUser("it150178");
+        eu2.setBorrowUser(user2);
         Equipment eu3 = new Equipment("video", "Camcorder3", "Apple");
         eu3.setDisplayname(this.setDisplayName(eu3));
-        eu3.setBorrowUser("it150178");
+        eu3.setBorrowUser(teacher);
         
         
         repo.add(e1);
         repo.add(e2);
+        repo.updateUser(user1);
+        repo.updateUser(user2);
+        repo.updateUser(teacher);
         repo.add(eu1);
         repo.add(eu2);
         repo.add(eu3);
@@ -84,8 +94,7 @@ public class EquipmentService {
     public String findAll() {
         //public LinkedList<Equipment> findAll()
         List<Equipment> eList = repo.getEquipment();
-        JSONArray equipments = new JSONArray(eList);
-        return equipments.toString();
+        return new Gson().toJson(eList);
     }
     
     @GET
@@ -102,8 +111,7 @@ public class EquipmentService {
     @Produces(MediaType.APPLICATION_JSON)
     public String findAvailableEquipment(){
         List equipment = repo.getAvailableEquipment();
-        Gson gson = new Gson();
-        return gson.toJson(equipment);
+        return new Gson().toJson(equipment);
     }
     
     /**

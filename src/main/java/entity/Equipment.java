@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity(name = "evs_equipment")
 @NamedQueries({
     @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e"),
-    @NamedQuery(name = "Equipment.findUserEquipment", query = " SELECT e FROM evs_equipment e WHERE e.userId = :userId"),
-    @NamedQuery(name = "Equipment.available", query = "SELECT e FROM evs_equipment e WHERE e.userId IS NULL")
+    @NamedQuery(name = "Equipment.findUserEquipment", query = " SELECT e FROM evs_equipment e WHERE e.borrowUser.username = :userId"),
+    @NamedQuery(name = "Equipment.available", query = "SELECT e FROM evs_equipment e WHERE e.borrowUser IS NULL")
 })
 public class Equipment implements Serializable {
     
