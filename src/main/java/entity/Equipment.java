@@ -1,6 +1,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,7 @@ public class Equipment implements Serializable {
     private String[] usableClasses;
     private long price;
     private String photoPath;
-    private Detail specs;
+    private ArrayList<String> specs;
     @OneToOne
     private User borrowUser = null;
 
@@ -52,7 +53,7 @@ public class Equipment implements Serializable {
      * @param category - e.g. Audio, Video, Camera, Gadgets
      * @param name - Product name
      * @param brand - The brand of the Product e.g. Fujifilm, Canon, Nikon, ...
-     * @param interneNummer - The internal Equipmentnumber e.g. F20
+     * @param interneNummer - The interneNummer Equipmentnumber e.g. F20
      * @param serialNumber - The Serialnumber of the Product
      * @param usableClasses - Defines the classes, who have access to this
      * Equipment e.g. 4AHITM, 3AHITM,...
@@ -61,7 +62,7 @@ public class Equipment implements Serializable {
      * @param specs - Is a String, which contains all the useful information
      * about the Equipment (e.g. Resolution, Crop-Factor,...)
      */
-    public Equipment(String category, String name, String brand, String interneNummer, String serialNumber, String[] usableClasses, long price, String photoPath, Detail specs) {
+    public Equipment(String category, String name, String brand, String interneNummer, String serialNumber, String[] usableClasses, long price, String photoPath, ArrayList<String> specs) {
         this.category = category;
         this.name = name;
         this.brand = brand;
@@ -73,7 +74,7 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
-    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, Detail specs, User userId) {
+    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, ArrayList<String> specs, User userId) {
         this.category = category;
         this.name = name;
         this.brand = brand;
@@ -177,11 +178,11 @@ public class Equipment implements Serializable {
         this.photoPath = photoPath;
     }
 
-    public Detail getSpecs() {
+    public ArrayList<String> getSpecs() {
         return specs;
     }
 
-    public void setSpecs(Detail specs) {
+    public void setSpecs(ArrayList<String> specs) {
         this.specs = specs;
     }
 

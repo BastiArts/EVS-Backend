@@ -50,7 +50,7 @@ public class EquipmentService {
     public String init() {
         Equipment e1 = new Equipment("camera", "Z12", "Canon");
         e1.setDisplayname(this.setDisplayName(e1));
-        Equipment e2 = new Equipment("mikro", "MX75", "Rode");
+        Equipment e2 = new Equipment("audio", "MX75", "Rode");
         e2.setDisplayname(this.setDisplayName(e2));
         e1.setInterneNummer("F22E2");
         e2.setInterneNummer("F23E4");
@@ -66,8 +66,10 @@ public class EquipmentService {
         eu1.setBorrowUser(user1);
         Equipment eu2 = new Equipment("camera", "CoolCam", "Ericson");
         eu2.setDisplayname(this.setDisplayName(eu2));
+        eu2.setInterneNummer("F23 F20");
         eu2.setBorrowUser(user2);
         Equipment eu3 = new Equipment("video", "Camcorder3", "Apple");
+        eu3.setInterneNummer("F22 A300");
         eu3.setDisplayname(this.setDisplayName(eu3));
         eu3.setBorrowUser(teacher);
         
