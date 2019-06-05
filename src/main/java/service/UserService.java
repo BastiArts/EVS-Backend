@@ -1,15 +1,23 @@
 package service;
 
 import com.google.gson.Gson;
+import com.sun.jersey.core.header.FormDataContentDisposition;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
 import evs.ldapconnection.LdapAuthException;
 import evs.ldapconnection.LdapException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import javax.ws.rs.core.Response;
 import jwt.JwtBuilder;
-import org.json.JSONObject;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.OutputStream;
+import java.io.IOException;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 /**
  *
@@ -77,7 +85,7 @@ public class UserService {
     public String message() {
         return "Java SE Server powered by EVS GmbH!";
     }
-    
+
     /**
      *
      * @param user
@@ -87,10 +95,42 @@ public class UserService {
     @Path("updateUser")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public String setProfilePath(String user){
+    public String setProfilePath(String user) {
         Gson gson = new Gson();
         User u = gson.fromJson(user, User.class);
         repo.updateUser(u);
         return gson.toJson(u);
+    }
+
+    @POST
+    @Path("uploadimage/{username}")
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public Response uploadPdfFile(
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData,
+            @PathParam("username") String username) throws Exception {
+        String UPLOAD_PATH = "uploads/avatar/";
+        String fileEnd = "";
+        try {
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            
+            if (fileMetaData.getName().endsWith(".jpg")) {
+                fileEnd = ".jpg";
+
+            } else if (fileMetaData.getName().endsWith(".png")) {
+                fileEnd = ".png";
+            }
+            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH + fileMetaData.getFileName()));
+            System.out.println(fileMetaData.getFileName() + " and the type is: " + fileMetaData.getType());
+            while ((read = fileInputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            throw new Exception("Error while uploading file. Please try again !!");
+        }
+        return Response.ok("Data uploaded successfully !!").build();
     }
 }
