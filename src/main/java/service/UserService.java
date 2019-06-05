@@ -114,15 +114,14 @@ public class UserService {
         try {
             int read = 0;
             byte[] bytes = new byte[1024];
-            
+
             if (fileMetaData.getName().endsWith(".jpg")) {
                 fileEnd = ".jpg";
 
             } else if (fileMetaData.getName().endsWith(".png")) {
                 fileEnd = ".png";
             }
-            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH + fileMetaData.getFileName()));
-            System.out.println(fileMetaData.getFileName() + " and the type is: " + fileMetaData.getType());
+            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH + username + fileEnd));
             while ((read = fileInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
