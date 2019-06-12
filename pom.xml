@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>htl</groupId>
     <artifactId>EVS-Server</artifactId>
-    <version>3.1</version>
+    <version>3.6</version>
     <packaging>jar</packaging>
     <name>EVS_rest_UserServer</name>
     

@@ -89,6 +89,10 @@ public class Repository {
 
     }
 
+    /*
+    * This Method updates a user --> Method name is not good!
+    *
+     */
     public User insertUser(User u) {
         em.getTransaction().begin();
         em.merge(u);
@@ -96,13 +100,22 @@ public class Repository {
         return u;
     }
 
-    public Equipment delete(Equipment e) {
+    /*
+    * Method deletes existing Equipment if something is broken
+    *
+     */
+    public Equipment delete(long id) {
         em.getTransaction().begin();
-        em.remove(e);
+        Equipment equ = em.find(Equipment.class, id);
+        em.remove(equ);
         em.getTransaction().commit();
-        return e;
+        return equ;
     }
 
+    /*
+    * This Method updates a equipment
+    * Maybe price or something else changes
+     */
     public Equipment update(Equipment e) {
         em.getTransaction().begin();
         Equipment equ = em.merge(e);
@@ -110,6 +123,10 @@ public class Repository {
         return equ;
     }
 
+    /*
+    * Method updates an existing user
+    *
+     */
     public String updateUser(User u) {
         em.getTransaction().begin();
         em.merge(u);
@@ -117,11 +134,24 @@ public class Repository {
         return u.getFirstname() + " " + u.getLastname() + " is updated!";
     }
 
+    /*
+    * Updates a user for changing Photopath
+    *
+    */
+    public String updateUser(String username, String photoPath) {
+        em.getTransaction().begin();
+        User u = em.find(User.class, username);
+        u.setPicturePath(photoPath);
+        em.merge(u);
+        em.getTransaction().commit();
+        return "Photopath for user updated!";
+    }
+
     public List getUserEquipment(String username) {
         return em.createNamedQuery("Equipment.findUserEquipment").setParameter("userId", username).getResultList();
     }
-    
-    public List getAvailableEquipment(){
+
+    public List getAvailableEquipment() {
         return em.createNamedQuery("Equipment.available").getResultList();
     }
 }

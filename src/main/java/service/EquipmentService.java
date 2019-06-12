@@ -10,6 +10,8 @@ package service;
 import com.google.gson.Gson;
 import entity.Equipment;
 import entity.User;
+import evs.ldapconnection.EVSColorizer;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,9 +30,10 @@ public class EquipmentService {
      * in and from the database (List in current version)
      */
     Repository repo = Repository.getInstance();
-    
+
     /**
      * Test message for testing if the server is running
+     *
      * @return
      */
     @GET
@@ -42,6 +45,7 @@ public class EquipmentService {
 
     /**
      * Some test initialization for equipment
+     *
      * @return
      */
     @GET
@@ -54,13 +58,16 @@ public class EquipmentService {
         e2.setDisplayname(this.setDisplayName(e2));
         e1.setInterneNummer("F22E2");
         e2.setInterneNummer("F23E4");
-        
+
         User user1 = new User("it150160", "Manuel", "Fadljevic", "4AHITM", true);
         User user2 = new User("it150178", "Sebastian", "Schiefermayr", "4AHITM", true);
         User teacher = new User("it150158", "Julian", "Dannigner", "4AHITM", false);
-        
-        
-        
+        ArrayList<String> specs = new ArrayList<>();
+        specs.add("24.2 MP Full-Frame Stacked CMOS Sensor");
+        specs.add("BIONZ X Image Processor & Front-End LSI");
+        specs.add("Blackout-Free Quad-VGA 3.7m-Dot OLED EVF");
+        Equipment musterEquipment = new Equipment("camera", "Alpha 9", "Sony", "F007", "007", null, 3498, "", specs);
+        musterEquipment.setDisplayname(this.setDisplayName(musterEquipment));
         Equipment eu1 = new Equipment("video", "Camcorder", "Sony");
         eu1.setDisplayname(this.setDisplayName(eu1));
         eu1.setBorrowUser(user1);
@@ -72,10 +79,10 @@ public class EquipmentService {
         eu3.setInterneNummer("F22 A300");
         eu3.setDisplayname(this.setDisplayName(eu3));
         eu3.setBorrowUser(teacher);
-        
-        
+
         repo.add(e1);
         repo.add(e2);
+        repo.add(musterEquipment);
         repo.updateUser(user1);
         repo.updateUser(user2);
         repo.updateUser(teacher);
@@ -88,7 +95,8 @@ public class EquipmentService {
     /**
      * Gets a List of all existing equipment from the database to send it to the
      * Front-End as a big String
-     * @return 
+     *
+     * @return
      */
     @GET
     @Path("find")
@@ -98,56 +106,70 @@ public class EquipmentService {
         List<Equipment> eList = repo.getEquipment();
         return new Gson().toJson(eList);
     }
-    
+
+    /**
+     * Method returns a list of all borrowed equipment to the associated user.
+     * This list is displayed to the user on the client under 'Mein Equipment'
+     *
+     * @return
+     */
     @GET
     @Path("find/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String findUserEquipment(@PathParam("username") String username){
+    public String findUserEquipment(@PathParam("username") String username) {
         List userEquList = repo.getUserEquipment(username);
         Gson gson = new Gson();
         return gson.toJson(userEquList);
     }
-    
+
+    /**
+     * Method returns a list of all available equipment to the client, who wants
+     * to borrow some new stuff
+     *
+     * @return
+     */
     @GET
     @Path("findAvailable")
     @Produces(MediaType.APPLICATION_JSON)
-    public String findAvailableEquipment(){
+    public String findAvailableEquipment() {
         List equipment = repo.getAvailableEquipment();
         return new Gson().toJson(equipment);
     }
-    
+
     /**
      * Gets an equipment from the Front-End (or testing applications) and
      * inserts it into the database
+     *
      * @param e
-     * @return 
+     * @return
      */
     @POST
     @Path("addEquipment")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String insert(String e) {
-        Gson gson = new Gson();
-        Equipment equipment = gson.fromJson(e, Equipment.class);
-        equipment.setDisplayname(equipment.getBrand() + " " + equipment.getName());
-        repo.add(equipment);
-        return equipment.getDisplayname();
+    public String insert(Equipment e) {
+        e.setDisplayname(e.getBrand() + " " + e.getName());
+        repo.add(e);
+        return e.getDisplayname();
     }
 
     /**
      * Delete existing equipment out of database
+     *
      * @param e
      */
-    @DELETE
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("deleteEquipment")
     public void delete(String e) {
         Gson gson = new Gson();
+        System.out.println(EVSColorizer.CYAN + e + EVSColorizer.reset());
         Equipment equ = gson.fromJson(e, Equipment.class);
-        repo.delete(equ);
+        repo.delete(equ.getId());
     }
 
     /**
      * Update existing Equipment
+     *
      * @param e
      */
     @PUT
@@ -158,10 +180,9 @@ public class EquipmentService {
         Equipment equipment = gson.fromJson(e, Equipment.class);
         repo.update(equipment);
     }
-    
-    
-    public String setDisplayName(Equipment e){
+
+    public String setDisplayName(Equipment e) {
         return e.getBrand() + " " + e.getName();
     }
-    
+
 }

@@ -14,16 +14,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author M. Fadljevic
-*/
+ */
 @XmlRootElement
 @Entity(name = "evs_equipment")
 @NamedQueries({
-    @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e"),
-    @NamedQuery(name = "Equipment.findUserEquipment", query = " SELECT e FROM evs_equipment e WHERE e.borrowUser.username = :userId"),
+    @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
+    ,
+    @NamedQuery(name = "Equipment.findUserEquipment", query = " SELECT e FROM evs_equipment e WHERE e.borrowUser.username = :userId")
+    ,
     @NamedQuery(name = "Equipment.available", query = "SELECT e FROM evs_equipment e WHERE e.borrowUser IS NULL")
 })
 public class Equipment implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
@@ -43,7 +45,6 @@ public class Equipment implements Serializable {
 
     /*What makes the Equipment special (24 Megapixel) and what 
                     is included with this Equipment(SD-Card, Akku, ...)*/
-
     public Equipment() {
     }
 
@@ -86,11 +87,10 @@ public class Equipment implements Serializable {
         this.specs = specs;
         this.borrowUser = userId;
     }
-    
 
     /**
      * Constructor
-     * 
+     *
      * @param category - e.g. Audio, Video, Camera, Gadgets
      * @param name - Product name
      * @param brand - The brand of the Product e.g. Fujifilm, Canon, Nikon, ...
@@ -101,11 +101,18 @@ public class Equipment implements Serializable {
         this.brand = brand;
     }
 
+    public long getId() {
+        return id;
+    }
+
     /**
-    * Just some Getter and Setter for all existing fields in this class
-    * to make sure JPA can change and get the data correct from the server
+     * Just some Getter and Setter for all existing fields in this class to make
+     * sure JPA can change and get the data correct from the server
      */
-    
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -193,5 +200,5 @@ public class Equipment implements Serializable {
     public void setBorrowUser(User borrowUser) {
         this.borrowUser = borrowUser;
     }
-    
+
 }

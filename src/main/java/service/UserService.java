@@ -1,7 +1,6 @@
 package service;
 
 import com.google.gson.Gson;
-import com.sun.jersey.core.header.FormDataContentDisposition;
 import javax.ws.rs.*;
 import repository.Repository;
 import entity.User;
@@ -11,13 +10,12 @@ import evs.ldapconnection.LdapException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import javax.ws.rs.core.Response;
 import jwt.JwtBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.OutputStream;
 import java.io.IOException;
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.*;
 
 /**
  *
@@ -76,7 +74,7 @@ public class UserService {
     }
 
     /**
-     *
+     * Just a short message for testing if the server is running
      * @return
      */
     @GET
@@ -87,7 +85,8 @@ public class UserService {
     }
 
     /**
-     *
+     * Updates an existing user, if picturePath changes or something else
+     * 
      * @param user
      * @return
      */
@@ -101,27 +100,33 @@ public class UserService {
         repo.updateUser(u);
         return gson.toJson(u);
     }
-
+    
+    /**
+     * Photoupload from Herr Professor Lackinger
+     * 
+     * @param file
+     * @return
+     */
     @POST
     @Path("uploadimage/{username}")
     @Consumes({MediaType.MULTIPART_FORM_DATA})
-    public Response uploadPdfFile(
+    public void uploadImage(
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileMetaData,
             @PathParam("username") String username) throws Exception {
         String UPLOAD_PATH = "uploads/avatar/";
-        String fileEnd = "";
         try {
             int read = 0;
             byte[] bytes = new byte[1024];
 
             if (fileMetaData.getName().endsWith(".jpg")) {
-                fileEnd = ".jpg";
+                UPLOAD_PATH += username + ".jpg";
 
             } else if (fileMetaData.getName().endsWith(".png")) {
-                fileEnd = ".png";
+                UPLOAD_PATH += username + ".png";
             }
-            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH + username + fileEnd));
+            repo.updateUser(username, UPLOAD_PATH);
+            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH));
             while ((read = fileInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
@@ -130,6 +135,5 @@ public class UserService {
         } catch (IOException e) {
             throw new Exception("Error while uploading file. Please try again !!");
         }
-        return Response.ok("Data uploaded successfully !!").build();
     }
 }

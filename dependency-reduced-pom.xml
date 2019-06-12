@@ -4,7 +4,7 @@
   <groupId>htl</groupId>
   <artifactId>EVS-Server</artifactId>
   <name>EVS_rest_UserServer</name>
-  <version>3.1</version>
+  <version>3.6</version>
   <build>
     <plugins>
       <plugin>
