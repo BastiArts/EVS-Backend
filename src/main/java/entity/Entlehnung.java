@@ -1,0 +1,110 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package entity;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+/**
+ *
+ * @author manuel
+ */
+@Entity
+public class Entlehnung implements Serializable {
+
+    // Felder: von; bis; status(verborgt, reserviert oder zurückgegeben)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    private Date fromdate;
+    private Date todate;
+    private String status; // Just 3 types (reserviert - verborgt - zurückgegeben)
+
+    @ManyToOne
+    private User user;
+    @ManyToOne
+    private Equipment equ;
+
+    public Entlehnung() {
+    }
+
+    public Entlehnung(long id, Date fromdate, Date todate, String status, User user, Equipment equ) {
+        this.id = id;
+        this.fromdate = fromdate;
+        this.todate = todate;
+        this.status = status;
+        this.user = user;
+        this.equ = equ;
+    }
+
+    public Entlehnung(Date fromdate, Date todate, String status) {
+        this.fromdate = fromdate;
+        this.todate = todate;
+        this.status = status;
+    }
+
+    public Entlehnung(Date fromdate, Date todate, String status, User user, Equipment equ) {
+        this.fromdate = fromdate;
+        this.todate = todate;
+        this.status = status;
+        this.user = user;
+        this.equ = equ;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Date getFromdate() {
+        return fromdate;
+    }
+
+    public void setFromdate(Date fromdate) {
+        this.fromdate = fromdate;
+    }
+
+    public Date getTodate() {
+        return todate;
+    }
+
+    public void setTodate(Date todate) {
+        this.todate = todate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Equipment getEqu() {
+        return equ;
+    }
+
+    public void setEqu(Equipment equ) {
+        this.equ = equ;
+    }
+
+}

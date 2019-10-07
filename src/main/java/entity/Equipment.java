@@ -19,10 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity(name = "evs_equipment")
 @NamedQueries({
     @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
-    ,
-    @NamedQuery(name = "Equipment.findUserEquipment", query = " SELECT e FROM evs_equipment e WHERE e.borrowUser.username = :userId")
-    ,
-    @NamedQuery(name = "Equipment.available", query = "SELECT e FROM evs_equipment e WHERE e.borrowUser IS NULL")
 })
 public class Equipment implements Serializable {
 
@@ -32,16 +28,14 @@ public class Equipment implements Serializable {
     private String category;
     private String name; //750 D
     private String brand; //Canon
-    @Transient
-    private String displayname; //brand + name
-    private String interneNummer;
-    private String serielNumber; //F33 for example
-    private String[] usableClasses;
-    private long price;
-    private String photoPath;
+    private String internenummer;
+    private String serielnumber; //F33 for example
+    private String[] usableclasses;
+    private String photopath;
     private ArrayList<String> specs;
-    @OneToOne
-    private User borrowUser = null;
+    private String displayname; //brand + name
+    private String longname;
+    private String inventorynumber;
 
     /*What makes the Equipment special (24 Megapixel) and what 
                     is included with this Equipment(SD-Card, Akku, ...)*/
@@ -54,38 +48,34 @@ public class Equipment implements Serializable {
      * @param category - e.g. Audio, Video, Camera, Gadgets
      * @param name - Product name
      * @param brand - The brand of the Product e.g. Fujifilm, Canon, Nikon, ...
-     * @param interneNummer - The interneNummer Equipmentnumber e.g. F20
+     * @param internenummer - The internenummer Equipmentnumber e.g. F20
      * @param serialNumber - The Serialnumber of the Product
-     * @param usableClasses - Defines the classes, who have access to this
+     * @param usableclasses - Defines the classes, who have access to this
      * Equipment e.g. 4AHITM, 3AHITM,...
-     * @param price - The price of the Product
-     * @param photoPath - Defines the Path of the stored Thumbnail
+     * @param photopath - Defines the Path of the stored Thumbnail
      * @param specs - Is a String, which contains all the useful information
      * about the Equipment (e.g. Resolution, Crop-Factor,...)
      */
-    public Equipment(String category, String name, String brand, String interneNummer, String serialNumber, String[] usableClasses, long price, String photoPath, ArrayList<String> specs) {
+    public Equipment(String category, String name, String brand, String internenummer, String serialNumber, String[] usableclasses, String photopath, ArrayList<String> specs) {
         this.category = category;
         this.name = name;
         this.brand = brand;
-        this.interneNummer = interneNummer;
-        this.serielNumber = serialNumber;
-        this.usableClasses = usableClasses;
-        this.price = price;
-        this.photoPath = photoPath;
+        this.internenummer = internenummer;
+        this.serielnumber = serialNumber;
+        this.usableclasses = usableclasses;
+        this.photopath = photopath;
         this.specs = specs;
     }
 
-    public Equipment(String category, String name, String brand, String interneNummer, String serielNumber, String[] usableClasses, long price, String photoPath, ArrayList<String> specs, User userId) {
+    public Equipment(String category, String name, String brand, String internenummer, String serielnumber, String[] usableclasses, long price, String photopath, ArrayList<String> specs, User userId) {
         this.category = category;
         this.name = name;
         this.brand = brand;
-        this.interneNummer = interneNummer;
-        this.serielNumber = serielNumber;
-        this.usableClasses = usableClasses;
-        this.price = price;
-        this.photoPath = photoPath;
+        this.internenummer = internenummer;
+        this.serielnumber = serielnumber;
+        this.usableclasses = usableclasses;
+        this.photopath = photopath;
         this.specs = specs;
-        this.borrowUser = userId;
     }
 
     /**
@@ -146,43 +136,35 @@ public class Equipment implements Serializable {
     }
 
     public String getInterneNummer() {
-        return interneNummer;
+        return internenummer;
     }
 
-    public void setInterneNummer(String interneNummer) {
-        this.interneNummer = interneNummer;
+    public void setInterneNummer(String internenummer) {
+        this.internenummer = internenummer;
     }
 
     public String getSerielNumber() {
-        return serielNumber;
+        return serielnumber;
     }
 
-    public void setSerielNumber(String serielNumber) {
-        this.serielNumber = serielNumber;
+    public void setSerielNumber(String serielnumber) {
+        this.serielnumber = serielnumber;
     }
 
     public String[] getUsableClasses() {
-        return usableClasses;
+        return usableclasses;
     }
 
-    public void setUsableClasses(String[] usableClasses) {
-        this.usableClasses = usableClasses;
-    }
-
-    public long getPrice() {
-        return price;
-    }
-
-    public void setPrice(long price) {
-        this.price = price;
+    public void setUsableClasses(String[] usableclasses) {
+        this.usableclasses = usableclasses;
     }
 
     public String getPhotoPath() {
-        return photoPath;
+        return photopath;
     }
 
-    public void setPhotoPath(String photoPath) {
-        this.photoPath = photoPath;
+    public void setPhotoPath(String photopath) {
+        this.photopath = photopath;
     }
 
     public ArrayList<String> getSpecs() {
@@ -193,12 +175,52 @@ public class Equipment implements Serializable {
         this.specs = specs;
     }
 
-    public User getBorrowUser() {
-        return borrowUser;
+    public String getInternenummer() {
+        return internenummer;
     }
 
-    public void setBorrowUser(User borrowUser) {
-        this.borrowUser = borrowUser;
+    public void setInternenummer(String internenummer) {
+        this.internenummer = internenummer;
+    }
+
+    public String getSerielnumber() {
+        return serielnumber;
+    }
+
+    public void setSerielnumber(String serielnumber) {
+        this.serielnumber = serielnumber;
+    }
+
+    public String[] getUsableclasses() {
+        return usableclasses;
+    }
+
+    public void setUsableclasses(String[] usableclasses) {
+        this.usableclasses = usableclasses;
+    }
+
+    public String getPhotopath() {
+        return photopath;
+    }
+
+    public void setPhotopath(String photopath) {
+        this.photopath = photopath;
+    }
+
+    public String getLongname() {
+        return longname;
+    }
+
+    public void setLongname(String longname) {
+        this.longname = longname;
+    }
+
+    public String getInventorynumber() {
+        return inventorynumber;
+    }
+
+    public void setInventorynumber(String inventorynumber) {
+        this.inventorynumber = inventorynumber;
     }
 
 }

@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User implements Serializable {
 
     @Id
-    @Column(length=30)
+    @Column(length = 30)
     private String username;
     private String firstname;
     private String lastname;
@@ -23,9 +23,6 @@ public class User implements Serializable {
     private String schoolclass;
     private boolean isStudent;
     private String picturePath = "";
-
-    @OneToMany(mappedBy = "borrowUser")
-    private ArrayList<Equipment> borrowedEquipment = new ArrayList<>();
 
     public User() {
     }
@@ -120,14 +117,6 @@ public class User implements Serializable {
 
     public void setStudent(boolean student) {
         isStudent = student;
-    }
-
-    public ArrayList<Equipment> getBorrowedEquipment() {
-        return borrowedEquipment;
-    }
-
-    public void setBorrowedEquipment(ArrayList<Equipment> borrowedEquipment) {
-        this.borrowedEquipment = borrowedEquipment;
     }
 
     //    public long getId() {

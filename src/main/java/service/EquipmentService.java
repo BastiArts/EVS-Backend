@@ -52,47 +52,28 @@ public class EquipmentService {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("init")
     public String init() {
-        Equipment e1 = new Equipment("camera", "Z12", "Canon");
-        e1.setDisplayname(this.setDisplayName(e1));
-        Equipment e2 = new Equipment("audio", "MX75", "Rode");
-        e2.setDisplayname(this.setDisplayName(e2));
-        e1.setInterneNummer("F22E2");
-        e2.setInterneNummer("F23E4");
-
-        User user1 = new User("it150160", "Manuel", "Fadljevic", "4AHITM", true);
-        User user2 = new User("it150178", "Sebastian", "Schiefermayr", "4AHITM", true);
-        User teacher = new User("it150158", "Julian", "Dannigner", "4AHITM", false);
-        ArrayList<String> specs = new ArrayList<>();
-        specs.add("24.2 MP Full-Frame Stacked CMOS Sensor");
-        specs.add("BIONZ X Image Processor & Front-End LSI");
-        specs.add("Blackout-Free Quad-VGA 3.7m-Dot OLED EVF");
-        Equipment musterEquipment = new Equipment("camera", "Alpha 9", "Sony", "F007", "007", null, 3498, "", specs);
-        musterEquipment.setDisplayname(this.setDisplayName(musterEquipment));
-        Equipment eu1 = new Equipment("video", "Camcorder", "Sony");
-        eu1.setDisplayname(this.setDisplayName(eu1));
-        eu1.setBorrowUser(user1);
-        Equipment eu2 = new Equipment("camera", "CoolCam", "Ericson");
-        eu2.setDisplayname(this.setDisplayName(eu2));
-        eu2.setInterneNummer("F23 F20");
-        eu2.setBorrowUser(user2);
-        Equipment eu3 = new Equipment("video", "Camcorder3", "Apple");
-        eu3.setInterneNummer("F22 A300");
-        eu3.setDisplayname(this.setDisplayName(eu3));
-        eu3.setBorrowUser(teacher);
+        String[] classes = new String[5];
+        classes[0] = "4AHITM";
+        classes[1] = "3AHITM";
+        classes[2] = "3BHITM";
+        classes[3] = "5AHITM";
+        classes[4] = "2BHITM";
+        Equipment e1 = new Equipment("camera", "nikon rx70", "Nikon", "F21", "ADDF202D", classes, "", null);
+        Equipment e2 = new Equipment("camera", "Canon eos 5d mark", "Canon", "F22", "BDDF202D", classes, "", null);
+        Equipment e3 = new Equipment("camera", "Gh4", "FujiFilm", "F23", "CDDF202D", classes, "", null);
+        Equipment e4 = new Equipment("video", "Blackmagic", "FujiFilm", "V06", "DDDF202D", classes, "", null);
+        Equipment e5 = new Equipment("audio", "Zoom", "Zoomer", "A04", "EDDF202D", classes, "", null);
 
         repo.add(e1);
         repo.add(e2);
-        repo.add(musterEquipment);
-        repo.updateUser(user1);
-        repo.updateUser(user2);
-        repo.updateUser(teacher);
-        repo.add(eu1);
-        repo.add(eu2);
-        repo.add(eu3);
-        return "Equipment is initialized! ";
+        repo.add(e3);
+        repo.add(e4);
+        repo.add(e5);
+
+        return "Equipment is initialized!";
     }
 
-    /**
+    /*
      * Gets a List of all existing equipment from the database to send it to the
      * Front-End as a big String
      *
