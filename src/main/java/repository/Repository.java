@@ -94,7 +94,11 @@ public class Repository {
     }
 
     public List getAvailableEquipment() {
-        return em.createQuery("SELECT equ FROM evs_equipment equ WHERE equ.id NOT IN (SELECT e.equ.id FROM ENTLEHNUNG e WHERE e.status = 'verborgt')", Equipment.class).getResultList();
+        return em.createQuery("SELECT equ FROM evs_equipment equ WHERE equ.id NOT IN (SELECT ent.equ.id FROM evs_entlehnung ent WHERE ent.status != 'zurückgegeben')", Equipment.class).getResultList();
+    }
+
+    public List getEquipmentFromUser(String username) {
+        return em.createQuery("SELECT ent.equ FROM evs_entlehnung ent WHERE ent.user.username = :username AND ent.status != 'zurückgegeben'", Equipment.class).setParameter("username", username).getResultList();
     }
 
     /*                                              *\
@@ -174,5 +178,27 @@ public class Repository {
         em.persist(e);
         em.getTransaction().commit();
         return e;
+    }
+
+    public Entlehnung findEntlehnung(long id) {
+        return em.find(Entlehnung.class, id);
+    }
+
+    public Entlehnung confirmEntlehnung(Entlehnung e) {
+        em.getTransaction().begin();
+        em.merge(e);
+        em.getTransaction().commit();
+        return e;
+    }
+
+    public String declineEntlehnung(Entlehnung e) {
+        em.getTransaction().begin();
+        em.remove(e);
+        em.getTransaction().commit();
+        return e.getId() + " was deleted";
+    }
+
+    public List findAllEntlehnungen() {
+        return em.createQuery("SELECT e FROM evs_entlehnung e").getResultList();
     }
 }

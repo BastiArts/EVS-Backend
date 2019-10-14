@@ -81,4 +81,22 @@ public class EntlehnungsService {
         return dateFormat.format(date);
     }
 
+    @GET
+    @Path("editentlehnung")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String editentlehnung(
+            @QueryParam("id") long id,
+            @QueryParam("status") String status
+    ) {
+        if (status.equalsIgnoreCase("confirmed")) {
+            // Ändern des status auf ausgeborgt
+            Entlehnung e = repo.findEntlehnung(id);
+            e.setStatus("zurückgegeben");
+            e = repo.confirmEntlehnung(e);
+            return new Gson().toJson(repo.findAllEntlehnungen());
+        } else {
+            System.out.println(repo.declineEntlehnung(repo.findEntlehnung(id)));
+        }
+        return "";
+    }
 }

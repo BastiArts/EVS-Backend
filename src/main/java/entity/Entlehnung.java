@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
  *
  * @author manuel
  */
-@Entity
+@Entity(name = "evs_entlehnung")
 public class Entlehnung implements Serializable {
 
     // Felder: von; bis; status(verborgt, reserviert oder zurückgegeben)

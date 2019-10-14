@@ -99,9 +99,9 @@ public class EquipmentService {
     @Path("find/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public String findUserEquipment(@PathParam("username") String username) {
-        //List userEquList = repo.getUserEquipment(username);
+        List userequ = repo.getEquipmentFromUser(username);
         Gson gson = new Gson();
-        return gson.toJson(new Equipment());
+        return gson.toJson(userequ);
     }
 
     /**
@@ -114,8 +114,11 @@ public class EquipmentService {
     @Path("findAvailable")
     @Produces(MediaType.APPLICATION_JSON)
     public String findAvailableEquipment() {
-        List availableEquipment = repo.getAvailableEquipment();
-        return new Gson().toJson(availableEquipment);
+        List<Equipment> available = repo.getAvailableEquipment();
+        available.forEach((equ) -> {
+            System.out.println(equ.getName());
+        });
+        return new Gson().toJson(available);
     }
 
     /**
