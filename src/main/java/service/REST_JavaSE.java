@@ -1,11 +1,13 @@
 package service;
 
+import enums.RentType;
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import util.SystemUtil;
 
 public class REST_JavaSE {
 
@@ -21,6 +23,7 @@ public class REST_JavaSE {
     }
 
     public static void main(String[] args) throws IOException {
+        SystemUtil.logToFile("Ausborgeverlauf", "Manuel Fadljevic - Panasonic GH4", RentType.AUSBORGEN);
         // Server starten
         final org.glassfish.grizzly.http.server.HttpServer server = startServer();
         // Static Content - Im Projekt-Verzeichnis "public" liegen die html-Files : localhost:8080/index.html
