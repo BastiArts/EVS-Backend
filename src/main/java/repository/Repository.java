@@ -1,5 +1,6 @@
 package repository;
 
+import entity.Entlehnung;
 import entity.Equipment;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
@@ -38,6 +39,10 @@ public class Repository {
         return instance;
     }
 
+
+    /*                                              *\
+                    EQUIPMENT METHODS
+    \*                                              */
     /**
      * Starts a transaction to communicate with the database and persists an
      * Object into the database. Finally a commit happens to make sure the
@@ -58,13 +63,43 @@ public class Repository {
                 .getResultList();
     }
 
-    /**
-     * Is the same as: SELECT u FROM evs_user u This command gets all elements
-     * of User.class in a List from database
-     *
-     * public List<User> getUsers() { return
-     * em.createNamedQuery("evs_user.findAll", User.class) .getResultList(); }
+    /*
+    * Method deletes existing Equipment if something is broken
+    *
      */
+    public Equipment delete(long id) {
+        em.getTransaction().begin();
+        Equipment equ = em.find(Equipment.class, id);
+        em.remove(equ);
+        em.getTransaction().commit();
+        return equ;
+    }
+
+    /*
+    * This Method updates a equipment
+    * Maybe price or something else changes
+     */
+    public Equipment update(Equipment e) {
+        em.getTransaction().begin();
+        Equipment equ = em.merge(e);
+        em.getTransaction().commit();
+        return equ;
+    }
+
+    public Equipment getSingleEquipment(long id) {
+        em.getTransaction().begin();
+        Equipment e = em.find(Equipment.class, id);
+        em.getTransaction().commit();
+        return e;
+    }
+
+    public List getAvailableEquipment() {
+        return em.createQuery("SELECT equ FROM evs_equipment equ WHERE equ.id NOT IN (SELECT e.equ.id FROM ENTLEHNUNG e WHERE e.status = 'verborgt')", Equipment.class).getResultList();
+    }
+
+    /*                                              *\
+                      USER METHODS
+    \*                                              */
     /**
      * proofLogin sends 2 Strings to another Method in LDAP to compare
      *
@@ -101,29 +136,6 @@ public class Repository {
     }
 
     /*
-    * Method deletes existing Equipment if something is broken
-    *
-     */
-    public Equipment delete(long id) {
-        em.getTransaction().begin();
-        Equipment equ = em.find(Equipment.class, id);
-        em.remove(equ);
-        em.getTransaction().commit();
-        return equ;
-    }
-
-    /*
-    * This Method updates a equipment
-    * Maybe price or something else changes
-     */
-    public Equipment update(Equipment e) {
-        em.getTransaction().begin();
-        Equipment equ = em.merge(e);
-        em.getTransaction().commit();
-        return equ;
-    }
-
-    /*
     * Method updates an existing user
     *
      */
@@ -134,10 +146,17 @@ public class Repository {
         return u.getFirstname() + " " + u.getLastname() + " is updated!";
     }
 
+    public User findUser(String userid) {
+        em.getTransaction().begin();
+        User user = em.find(User.class, userid);
+        em.getTransaction().commit();
+        return user;
+    }
+
     /*
     * Updates a user for changing Photopath
     *
-    */
+     */
     public String updateUser(String username, String photoPath) {
         em.getTransaction().begin();
         User u = em.find(User.class, username);
@@ -147,11 +166,13 @@ public class Repository {
         return "Photopath for user updated!";
     }
 
-    public List getUserEquipment(String username) {
-        return em.createNamedQuery("Equipment.findUserEquipment").setParameter("userId", username).getResultList();
-    }
-
-    public List getAvailableEquipment() {
-        return em.createNamedQuery("Equipment.available").getResultList();
+    /*                                              *\
+                   ENTLEHNUNG METHODS
+    \*                                              */
+    public Entlehnung makeNewEntlehnung(Entlehnung e) {
+        em.getTransaction().begin();
+        em.persist(e);
+        em.getTransaction().commit();
+        return e;
     }
 }

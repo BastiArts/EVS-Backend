@@ -8,10 +8,12 @@ package service;
  * or what works 2. PUSH Program under Git -> Remote -> Push...
  */
 import com.google.gson.Gson;
+import entity.Entlehnung;
 import entity.Equipment;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -63,7 +65,6 @@ public class EquipmentService {
         Equipment e3 = new Equipment("camera", "Gh4", "FujiFilm", "F23", "CDDF202D", classes, "", null);
         Equipment e4 = new Equipment("video", "Blackmagic", "FujiFilm", "V06", "DDDF202D", classes, "", null);
         Equipment e5 = new Equipment("audio", "Zoom", "Zoomer", "A04", "EDDF202D", classes, "", null);
-
         repo.add(e1);
         repo.add(e2);
         repo.add(e3);
@@ -98,9 +99,9 @@ public class EquipmentService {
     @Path("find/{username}")
     @Produces(MediaType.APPLICATION_JSON)
     public String findUserEquipment(@PathParam("username") String username) {
-        List userEquList = repo.getUserEquipment(username);
+        //List userEquList = repo.getUserEquipment(username);
         Gson gson = new Gson();
-        return gson.toJson(userEquList);
+        return gson.toJson(new Equipment());
     }
 
     /**
@@ -113,8 +114,8 @@ public class EquipmentService {
     @Path("findAvailable")
     @Produces(MediaType.APPLICATION_JSON)
     public String findAvailableEquipment() {
-        List equipment = repo.getAvailableEquipment();
-        return new Gson().toJson(equipment);
+        List availableEquipment = repo.getAvailableEquipment();
+        return new Gson().toJson(availableEquipment);
     }
 
     /**

@@ -36,8 +36,7 @@ public class Entlehnung implements Serializable {
     public Entlehnung() {
     }
 
-    public Entlehnung(long id, Date fromdate, Date todate, String status, User user, Equipment equ) {
-        this.id = id;
+    public Entlehnung(Date fromdate, Date todate, String status, User user, Equipment equ) {
         this.fromdate = fromdate;
         this.todate = todate;
         this.status = status;
@@ -49,14 +48,6 @@ public class Entlehnung implements Serializable {
         this.fromdate = fromdate;
         this.todate = todate;
         this.status = status;
-    }
-
-    public Entlehnung(Date fromdate, Date todate, String status, User user, Equipment equ) {
-        this.fromdate = fromdate;
-        this.todate = todate;
-        this.status = status;
-        this.user = user;
-        this.equ = equ;
     }
 
     public long getId() {
