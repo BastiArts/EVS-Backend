@@ -27,6 +27,7 @@ public class Entlehnung implements Serializable {
     private Date fromdate;
     private Date todate;
     private String status; // Just 3 types (reserviert - verborgt - zurückgegeben)
+    private boolean approved = false; // 
 
     @ManyToOne
     private User user;
@@ -98,4 +99,11 @@ public class Entlehnung implements Serializable {
         this.equ = equ;
     }
 
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
 }

@@ -70,8 +70,8 @@ public final class LdapUser {
         this.setUserId(userId);
 
         // Zertifikat 
-        System.setProperty("javax.net.ssl.trustStore", "/Users/manuel/Documents/EVS/EVS-Backend/keystore.bin");
-        //System.setProperty("javax.net.ssl.trustStore", "/home/server/keystore.bin");
+        //System.setProperty("javax.net.ssl.trustStore", "/Users/manuel/Documents/EVS/EVS-Backend/keystore.bin");
+        System.setProperty("javax.net.ssl.trustStore", "/home/server/keystore.bin");
 
         // LDAP-Properties
         Hashtable props = new Hashtable();

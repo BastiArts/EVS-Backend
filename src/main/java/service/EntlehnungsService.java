@@ -37,6 +37,8 @@ public class EntlehnungsService {
      */
     Repository repo = Repository.getInstance();
 
+    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
     /**
      * Test message for testing if the server is running
      *
@@ -64,7 +66,6 @@ public class EntlehnungsService {
         System.out.println(EVSColorizer.cyan() + todate + EVSColorizer.reset());
         User user = repo.findUser(username);
         Equipment equ = repo.getSingleEquipment(id);
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date fromdate1 = dateFormat.parse(fromdate);
         Date todate1 = dateFormat.parse(todate);
         Entlehnung entl = new Entlehnung(fromdate1, todate1, "reserviert", user, equ);
@@ -91,7 +92,11 @@ public class EntlehnungsService {
         if (status.equalsIgnoreCase("confirmed")) {
             // Ändern des status auf ausgeborgt
             Entlehnung e = repo.findEntlehnung(id);
-            e.setStatus("zurückgegeben");
+            if (dateFormat.format(new Date()).equalsIgnoreCase(dateFormat.format(e.getFromdate()))) {
+                // Wenn es der heutige Tag ist --> ausborgen
+                e.setStatus("verborgt");
+            }
+            e.setApproved(true);
             e = repo.confirmEntlehnung(e);
             return new Gson().toJson(repo.findAllEntlehnungen());
         } else {
@@ -99,4 +104,5 @@ public class EntlehnungsService {
         }
         return "";
     }
+
 }

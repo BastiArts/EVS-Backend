@@ -115,9 +115,6 @@ public class EquipmentService {
     @Produces(MediaType.APPLICATION_JSON)
     public String findAvailableEquipment() {
         List<Equipment> available = repo.getAvailableEquipment();
-        available.forEach((equ) -> {
-            System.out.println(equ.getName());
-        });
         return new Gson().toJson(available);
     }
 

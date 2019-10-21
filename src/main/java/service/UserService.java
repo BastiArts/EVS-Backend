@@ -75,6 +75,7 @@ public class UserService {
 
     /**
      * Just a short message for testing if the server is running
+     *
      * @return
      */
     @GET
@@ -86,7 +87,7 @@ public class UserService {
 
     /**
      * Updates an existing user, if picturePath changes or something else
-     * 
+     *
      * @param user
      * @return
      */
@@ -100,10 +101,10 @@ public class UserService {
         repo.updateUser(u);
         return gson.toJson(u);
     }
-    
+
     /**
      * Photoupload from Herr Professor Lackinger
-     * 
+     *
      * @param file
      * @return
      */
@@ -114,6 +115,7 @@ public class UserService {
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileMetaData,
             @PathParam("username") String username) throws Exception {
+        boolean worked = false;
         String UPLOAD_PATH = "uploads/avatar/";
         try {
             int read = 0;
@@ -125,15 +127,23 @@ public class UserService {
             } else if (fileMetaData.getName().endsWith(".png")) {
                 UPLOAD_PATH += username + ".png";
             }
-            repo.updateUser(username, UPLOAD_PATH);
             OutputStream out = new FileOutputStream(new File(UPLOAD_PATH));
             while ((read = fileInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
             out.flush();
             out.close();
+            worked = true;
         } catch (IOException e) {
             throw new Exception("Error while uploading file. Please try again !!");
+        }
+
+        if (worked) {
+            // Update User on database
+            User user = repo.findUser(username);
+            user.setPicturePath(UPLOAD_PATH);
+            repo.updateUser(user);
+            System.out.println(EVSColorizer.purple() + "User picture successfully uploaded!" + EVSColorizer.reset());
         }
     }
 }
