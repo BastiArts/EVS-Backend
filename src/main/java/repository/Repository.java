@@ -101,6 +101,10 @@ public class Repository {
         return em.createQuery("SELECT ent.equ FROM evs_entlehnung ent WHERE ent.user.username = :username AND ent.status != 'zurückgegeben'", Equipment.class).setParameter("username", username).getResultList();
     }
 
+    public Equipment getEquBySer(String seriennummer) {
+        return (Equipment) em.createNamedQuery("Equipment.findSingleBySeriel").setParameter("sernumber", seriennummer).getResultList().get(0);
+    }
+
     /*                                              *\
                       USER METHODS
     \*                                              */

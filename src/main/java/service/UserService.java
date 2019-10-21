@@ -1,6 +1,7 @@
 package service;
 
 import com.google.gson.Gson;
+import entity.Equipment;
 import javax.ws.rs.*;
 import repository.Repository;
 import entity.User;

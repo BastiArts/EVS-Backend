@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity(name = "evs_equipment")
 @NamedQueries({
     @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
+    ,
+    @NamedQuery(name = "Equipment.findSingleBySeriel", query = "SELECT e FROM evs_equipment e WHERE e.serielnumber = :sernumber")
 })
 public class Equipment implements Serializable {
 

@@ -12,11 +12,18 @@ import entity.Entlehnung;
 import entity.Equipment;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import repository.Repository;
 import org.json.JSONArray;
 
@@ -128,10 +135,11 @@ public class EquipmentService {
     @POST
     @Path("addEquipment")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public String insert(Equipment e) {
         e.setDisplayname(e.getBrand() + " " + e.getName());
         repo.add(e);
-        return e.getDisplayname();
+        return new Gson().toJson(e);
     }
 
     /**
@@ -142,11 +150,12 @@ public class EquipmentService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("deleteEquipment")
-    public void delete(String e) {
+    public String delete(String e) {
         Gson gson = new Gson();
         System.out.println(EVSColorizer.CYAN + e + EVSColorizer.reset());
         Equipment equ = gson.fromJson(e, Equipment.class);
         repo.delete(equ.getId());
+        return new Gson().toJson(equ);
     }
 
     /**
@@ -157,14 +166,64 @@ public class EquipmentService {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Path("updateEquipment")
-    public void update(String e) {
+    public String update(String e) {
         Gson gson = new Gson();
-        Equipment equipment = gson.fromJson(e, Equipment.class);
-        repo.update(equipment);
+        Equipment equ = gson.fromJson(e, Equipment.class);
+        repo.update(equ);
+        return new Gson().toJson(equ);
     }
 
     public String setDisplayName(Equipment e) {
         return e.getBrand() + " " + e.getName();
     }
 
+    /**
+     * Photoupload from Herr Professor Lackinger
+     *
+     * @param file
+     * @return
+     */
+    @POST
+    @Path("uploadimage")
+    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    public void uploadImage(
+            @FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileMetaData,
+            @FormDataParam("seriennummer") String seriennummer) throws Exception {
+        boolean worked = false;
+        Equipment equ = repo.getEquBySer(seriennummer);
+        String UPLOAD_PATH = "uploads/equipment/";
+        File dirs = new File(UPLOAD_PATH);
+        if (!dirs.exists()) {
+            dirs.mkdirs();
+        }
+        UPLOAD_PATH += equ.getInterneNummer();
+        try {
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            if (fileMetaData.getName().endsWith(".jpg")) {
+                UPLOAD_PATH += ".jpg";
+
+            } else if (fileMetaData.getName().endsWith(".png")) {
+                UPLOAD_PATH += ".png";
+            }
+            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH));
+            while ((read = fileInputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.flush();
+            out.close();
+            worked = true;
+        } catch (IOException e) {
+            throw new Exception("Error while uploading file. Please try again !!");
+        }
+
+        if (worked) {
+            // Update User on database
+            equ.setPhotoPath(UPLOAD_PATH);
+            repo.update(equ);
+            System.out.println(EVSColorizer.purple() + "Equipment picture successfully uploaded!" + EVSColorizer.reset());
+        }
+    }
 }
