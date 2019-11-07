@@ -61,7 +61,7 @@ public class EntlehnungsService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("createEntlehnung")
+    @Path("createentlehnung")
     public String createEntlehnung(
             @QueryParam("userid") String username,
             @QueryParam("equipmentid") long id,
@@ -93,6 +93,10 @@ public class EntlehnungsService {
             new DATE() < fromdate           --> future --> status - guarded
              */
             Date nowdate = new Date();
+            System.out.println(EVSColorizer.cyan() + nowdate + EVSColorizer.reset());
+            System.out.println(EVSColorizer.cyan() + e.getFromdate() + EVSColorizer.reset());
+            System.out.println(EVSColorizer.cyan() + e.getTodate() + EVSColorizer.reset());
+            System.out.println(EVSColorizer.cyan() + e.getFromdate().after(nowdate) + EVSColorizer.reset());
 
             if (e.getFromdate().before(nowdate) && e.getTodate().after(nowdate)) {
                 // borrowed
@@ -120,11 +124,11 @@ public class EntlehnungsService {
     public String getPendingEntlehnungen() {
         return gson.toJson(repo.findPendingEntlehnungen());
     }
-    
+
     @GET
     @Path("getallentlehnungen")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getAllEntlehnungen(){
+    public String getAllEntlehnungen() {
         return gson.toJson(repo.getAllEntlehnungen());
     }
     /*

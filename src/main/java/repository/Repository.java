@@ -209,9 +209,9 @@ public class Repository {
     }
 
     public List proofDateOfEquipmentReservation(long id) {
-        return em.createQuery("SELECT e FROM evs_entlehnung e where e.equ.id = :id AND e.status = :status1 AND e.status = :status2")
+        return em.createQuery("SELECT e FROM evs_entlehnung e where e.equ.id = :id AND e.status = :status1 OR e.status = :status2")
                 .setParameter("id", id)
-                .setParameter("status1", "guarded") // guarded = reserviert
+                .setParameter("status1", "guarded")
                 .setParameter("status2", "borrowed")
                 .getResultList();
     }
