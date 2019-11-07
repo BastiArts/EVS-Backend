@@ -26,7 +26,7 @@ public class Entlehnung implements Serializable {
     private long id;
     private Date fromdate;
     private Date todate;
-    private String status; // Just 3 types (reserviert - verborgt - zurückgegeben)
+    private String status; // 4 types (pending - guarded - borrowed - returned)
     private boolean approved = false; // 
 
     @ManyToOne

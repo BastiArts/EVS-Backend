@@ -176,13 +176,8 @@ public class Repository {
 
     /*                                              *\
                    ENTLEHNUNG METHODS
-    \*                                              */
-    public Entlehnung makeNewEntlehnung(Entlehnung e) {
-        em.getTransaction().begin();
-        em.persist(e);
-        em.getTransaction().commit();
-        return e;
-    }
+    \*                                              *
+    
 
     public Entlehnung findEntlehnung(long id) {
         return em.find(Entlehnung.class, id);
@@ -203,6 +198,55 @@ public class Repository {
     }
 
     public List findAllEntlehnungen() {
+        return em.createQuery("SELECT e FROM evs_entlehnung e").getResultList();
+    }
+    
+    public List getAllAnfragen(){
+        return em.createQuery("Select e from evs_entlehnung e where e.status=''").getResultList();
+    }*/
+    public Entlehnung findEntlehnung(long id) {
+        return em.find(Entlehnung.class, id);
+    }
+
+    public List proofDateOfEquipmentReservation(long id) {
+        return em.createQuery("SELECT e FROM evs_entlehnung e where e.equ.id = :id AND e.status = :status1 AND e.status = :status2")
+                .setParameter("id", id)
+                .setParameter("status1", "guarded") // guarded = reserviert
+                .setParameter("status2", "borrowed")
+                .getResultList();
+    }
+
+    public Entlehnung makeNewEntlehnung(Entlehnung e) {
+        em.getTransaction().begin();
+        em.persist(e);
+        em.getTransaction().commit();
+        return e;
+    }
+
+    public Entlehnung confirmEntlehnung(Entlehnung e) {
+        em.getTransaction().begin();
+        em.merge(e);
+        em.getTransaction().commit();
+        return e;
+    }
+
+    public String declineEntlehnung(Entlehnung e) {
+        em.getTransaction().begin();
+        em.remove(e);
+        em.getTransaction().commit();
+        return e.getId() + " was deleted";
+    }
+
+    public List findAllEntlehnungen() {
+        return em.createQuery("SELECT e FROM evs_entlehnung e").getResultList();
+    }
+
+    public List findPendingEntlehnungen() {
+        return em.createQuery("Select e from evs_entlehnung e where e.status=:status").setParameter("status", "pending").getResultList();
+
+    }
+
+    public List getAllEntlehnungen() {
         return em.createQuery("SELECT e FROM evs_entlehnung e").getResultList();
     }
 }

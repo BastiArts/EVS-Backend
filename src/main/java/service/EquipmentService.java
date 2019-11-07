@@ -10,6 +10,7 @@ package service;
 import com.google.gson.Gson;
 import entity.Entlehnung;
 import entity.Equipment;
+import entity.LogEntry;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
 import java.io.File;
@@ -17,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -134,12 +136,14 @@ public class EquipmentService {
      */
     @POST
     @Path("addEquipment")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String insert(Equipment e) {
+    public String insert(String equ) {
+        Gson gson = new Gson();
+        Equipment e = gson.fromJson(equ, Equipment.class);
+        e.setPhotoPath(findRightPicture(e.getCategory()));
         e.setDisplayname(e.getBrand() + " " + e.getName());
         repo.add(e);
-        return new Gson().toJson(e);
+        return gson.toJson(e);
     }
 
     /**
@@ -173,6 +177,58 @@ public class EquipmentService {
         return new Gson().toJson(equ);
     }
 
+    /**
+     * Send the log entries as List of LogEntry
+     *
+     * @param none
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("getalllogsfiles")
+    public String sendlogs() {
+        List<LogEntry> logentries = new ArrayList<>();
+        File file = new File("log");
+        File[] logs = file.listFiles();
+        List<String> logsasstring = new ArrayList<>();
+        for (int i = 0; i < logs.length; i++) {
+            logsasstring.add(logs[i].getName());
+        }
+        return new Gson().toJson(logsasstring);
+    }
+
+    /**
+     * Send the log entries as List of LogEntry
+     *
+     * @param none
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("getdatafromlog/{name}")
+    public String senddatafromlog(@PathParam("name") String filename) {
+        File file = new File("log/" + filename);
+        List<LogEntry> logentries = new ArrayList<>();
+        try {
+            List<String> alllines = Files.readAllLines(file.toPath());
+            alllines.forEach(line -> {
+                
+                String timestamp = line.substring(0, 19);
+                int linebegin = line.indexOf('[');
+                int lineend = line.indexOf(']');
+                String status = line.substring(linebegin + 1, lineend - 1);
+                linebegin = lineend + 1;
+                lineend = line.indexOf('-') - 1;
+                String name = line.substring(linebegin, lineend);
+                String equname = line.substring(lineend + 2);
+                logentries.add(new LogEntry(timestamp, status, name, equname));
+            });
+            return new Gson().toJson(logentries);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Some errors appeared sorry dude!");
+            return "failed!" + filename;
+        }
+    }
+
     public String setDisplayName(Equipment e) {
         return e.getBrand() + " " + e.getName();
     }
@@ -185,11 +241,14 @@ public class EquipmentService {
      */
     @POST
     @Path("uploadimage")
-    @Consumes({MediaType.MULTIPART_FORM_DATA})
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     public void uploadImage(
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileMetaData,
             @FormDataParam("seriennummer") String seriennummer) throws Exception {
+        System.out.println("");
+        System.out.println(EVSColorizer.green() + " AT THE BIGINING " + EVSColorizer.reset());
+        System.out.println("");
         boolean worked = false;
         Equipment equ = repo.getEquBySer(seriennummer);
         String UPLOAD_PATH = "uploads/equipment/";
@@ -197,23 +256,33 @@ public class EquipmentService {
         if (!dirs.exists()) {
             dirs.mkdirs();
         }
-        UPLOAD_PATH += equ.getInterneNummer();
+        System.out.println("");
+        System.out.println(EVSColorizer.green() + " DIRECTORY WURDE ERSTELLT " + EVSColorizer.reset());
+        System.out.println("");
+        //UPLOAD_PATH += equ.getInterneNummer();
         try {
             int read = 0;
             byte[] bytes = new byte[1024];
 
-            if (fileMetaData.getName().endsWith(".jpg")) {
+            /*if (fileMetaData.getName().endsWith(".jpg")) {
                 UPLOAD_PATH += ".jpg";
 
             } else if (fileMetaData.getName().endsWith(".png")) {
                 UPLOAD_PATH += ".png";
-            }
+            }*/
+            System.out.println("");
+            System.out.println(EVSColorizer.green() + " KURZ BEVOR DEM FILEUPLOAD " + EVSColorizer.reset());
+            System.out.println("");
+            UPLOAD_PATH += fileMetaData.getName();
             OutputStream out = new FileOutputStream(new File(UPLOAD_PATH));
             while ((read = fileInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
             out.flush();
             out.close();
+            System.out.println("");
+            System.out.println(EVSColorizer.green() + " HAT FUNKTIONIERT!!!! " + EVSColorizer.reset());
+            System.out.println("");
             worked = true;
         } catch (IOException e) {
             throw new Exception("Error while uploading file. Please try again !!");
@@ -224,6 +293,19 @@ public class EquipmentService {
             equ.setPhotoPath(UPLOAD_PATH);
             repo.update(equ);
             System.out.println(EVSColorizer.purple() + "Equipment picture successfully uploaded!" + EVSColorizer.reset());
+        }
+    }
+
+    public String findRightPicture(String category) {
+        switch (category) {
+            case "camera":
+                return "../assets/icons/equip/camera_icon.svg";
+            case "videokamera":
+                return "../assets/icons/equip/videocamera_icon.svg";
+            case "audio":
+                return "../assets/icons/equip/microphone_icon.svg";
+            default:
+                return "";
         }
     }
 }

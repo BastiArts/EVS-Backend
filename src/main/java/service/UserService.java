@@ -118,6 +118,10 @@ public class UserService {
             @PathParam("username") String username) throws Exception {
         boolean worked = false;
         String UPLOAD_PATH = "uploads/avatar/";
+        File folders = new File(UPLOAD_PATH);
+        if(!folders.exists()){
+            folders.mkdirs();
+        }
         try {
             int read = 0;
             byte[] bytes = new byte[1024];

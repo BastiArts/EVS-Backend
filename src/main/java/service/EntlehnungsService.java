@@ -38,6 +38,7 @@ public class EntlehnungsService {
     Repository repo = Repository.getInstance();
 
     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    Gson gson = new Gson();
 
     /**
      * Test message for testing if the server is running
@@ -53,6 +54,13 @@ public class EntlehnungsService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("proofdates/{id}")
+    public String proofDateForEquipment(@PathParam("id") long id) {
+        return gson.toJson(repo.proofDateOfEquipmentReservation(id));
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("createEntlehnung")
     public String createEntlehnung(
             @QueryParam("userid") String username,
@@ -60,18 +68,67 @@ public class EntlehnungsService {
             @QueryParam("fromdate") String fromdate,
             @QueryParam("todate") String todate
     ) throws ParseException {
-        System.out.println(EVSColorizer.cyan() + username);
-        System.out.println(EVSColorizer.cyan() + id);
-        System.out.println(EVSColorizer.cyan() + fromdate);
-        System.out.println(EVSColorizer.cyan() + todate + EVSColorizer.reset());
         User user = repo.findUser(username);
         Equipment equ = repo.getSingleEquipment(id);
         Date fromdate1 = dateFormat.parse(fromdate);
         Date todate1 = dateFormat.parse(todate);
-        Entlehnung entl = new Entlehnung(fromdate1, todate1, "reserviert", user, equ);
+        Entlehnung entl = new Entlehnung(fromdate1, todate1, "pending", user, equ);
         entl = repo.makeNewEntlehnung(entl);
         return new Gson().toJson(entl);
     }
+
+    @GET
+    @Path("editentlehnung")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String editentlehnung(
+            @QueryParam("id") long id,
+            @QueryParam("status") String status
+    ) {
+        Entlehnung e;
+        if (status.equalsIgnoreCase("confirmed")) {
+            // Ändern des status auf ausgeborgt
+            e = repo.findEntlehnung(id);
+            /*
+            fromdate <= new DATE() < todate --> status - borrowed
+            new DATE() < fromdate           --> future --> status - guarded
+             */
+            Date nowdate = new Date();
+
+            if (e.getFromdate().before(nowdate) && e.getTodate().after(nowdate)) {
+                // borrowed
+                e.setStatus("borrowed");
+            } else if (dateFormat.format(nowdate).equals(dateFormat.format(e.getFromdate()))) {
+                // borrowed
+                e.setStatus("borrowed");
+            } else if (e.getFromdate().after(nowdate)) {
+                // guarded
+                e.setStatus("guarded");
+            }
+
+            e.setApproved(true);
+            e = repo.confirmEntlehnung(e);
+            return new Gson().toJson(repo.findPendingEntlehnungen());
+        } else {
+            System.out.println(repo.declineEntlehnung(repo.findEntlehnung(id)));
+            return "Entlehnung was declined";
+        }
+    }
+
+    @GET
+    @Path("getpendingentlehnungen")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getPendingEntlehnungen() {
+        return gson.toJson(repo.findPendingEntlehnungen());
+    }
+    
+    @GET
+    @Path("getallentlehnungen")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllEntlehnungen(){
+        return gson.toJson(repo.getAllEntlehnungen());
+    }
+    /*
+    
 
     @GET
     @Path("getdateexample")
@@ -105,4 +162,10 @@ public class EntlehnungsService {
         return "";
     }
 
+    @GET
+    @Path("getanfragen")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllAnfragen() {
+        return new Gson().toJson(repo.getAllAnfragen());
+    }*/
 }
