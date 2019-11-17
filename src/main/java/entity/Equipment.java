@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Equipment.findAll", query = "SELECT e FROM evs_equipment e")
     ,
-    @NamedQuery(name = "Equipment.findSingleBySeriel", query = "SELECT e FROM evs_equipment e WHERE e.serielnumber = :sernumber")
+    @NamedQuery(name = "Equipment.findSingleBySeriel", query = "SELECT e FROM evs_equipment e WHERE e.serialnumber = :sernumber")
 })
 public class Equipment implements Serializable {
 
@@ -31,7 +31,7 @@ public class Equipment implements Serializable {
     private String name; //750 D
     private String brand; //Canon
     private String internenummer;
-    private String serielnumber; //F33 for example
+    private String serialnumber; //F33 for example
     private String[] usableclasses;
     private String photopath;
     private ArrayList<String> specs;
@@ -63,7 +63,7 @@ public class Equipment implements Serializable {
         this.name = name;
         this.brand = brand;
         this.internenummer = internenummer;
-        this.serielnumber = serialNumber;
+        this.serialnumber = serialNumber;
         this.usableclasses = usableclasses;
         this.photopath = photopath;
         this.specs = specs;
@@ -74,7 +74,7 @@ public class Equipment implements Serializable {
         this.name = name;
         this.brand = brand;
         this.internenummer = internenummer;
-        this.serielnumber = serielnumber;
+        this.serialnumber = serielnumber;
         this.usableclasses = usableclasses;
         this.photopath = photopath;
         this.specs = specs;
@@ -146,11 +146,11 @@ public class Equipment implements Serializable {
     }
 
     public String getSerielNumber() {
-        return serielnumber;
+        return serialnumber;
     }
 
     public void setSerielNumber(String serielnumber) {
-        this.serielnumber = serielnumber;
+        this.serialnumber = serielnumber;
     }
 
     public String[] getUsableClasses() {
@@ -185,12 +185,12 @@ public class Equipment implements Serializable {
         this.internenummer = internenummer;
     }
 
-    public String getSerielnumber() {
-        return serielnumber;
+    public String getSerialnumber() {
+        return serialnumber;
     }
 
-    public void setSerielnumber(String serielnumber) {
-        this.serielnumber = serielnumber;
+    public void setSerialnumber(String serialnumber) {
+        this.serialnumber = serialnumber;
     }
 
     public String[] getUsableclasses() {

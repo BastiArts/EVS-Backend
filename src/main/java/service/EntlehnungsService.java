@@ -64,12 +64,13 @@ public class EntlehnungsService {
     @Path("createentlehnung")
     public String createEntlehnung(
             @QueryParam("userid") String username,
-            @QueryParam("equipmentid") long id,
+            @QueryParam("serialnumber") String serial,
             @QueryParam("fromdate") String fromdate,
             @QueryParam("todate") String todate
     ) throws ParseException {
         User user = repo.findUser(username);
-        Equipment equ = repo.getSingleEquipment(id);
+        Equipment equ = repo.getEquBySer(serial);
+
         Date fromdate1 = dateFormat.parse(fromdate);
         Date todate1 = dateFormat.parse(todate);
         Entlehnung entl = new Entlehnung(fromdate1, todate1, "pending", user, equ);
@@ -130,6 +131,13 @@ public class EntlehnungsService {
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllEntlehnungen() {
         return gson.toJson(repo.getAllEntlehnungen());
+    }
+
+    @GET
+    @Path("getequbyser/{serie}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String findEquBySeriel(@PathParam("serie") String serialnumber) {
+        return gson.toJson(repo.getEquBySer(serialnumber));
     }
     /*
     

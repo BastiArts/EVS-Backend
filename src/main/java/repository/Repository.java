@@ -102,7 +102,7 @@ public class Repository {
     }
 
     public Equipment getEquBySer(String seriennummer) {
-        return (Equipment) em.createNamedQuery("Equipment.findSingleBySeriel").setParameter("sernumber", seriennummer).getResultList().get(0);
+        return em.createNamedQuery("Equipment.findSingleBySeriel", Equipment.class).setParameter("sernumber", seriennummer).getResultList().get(0);
     }
 
     /*                                              *\
