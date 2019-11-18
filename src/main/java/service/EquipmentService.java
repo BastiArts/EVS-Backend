@@ -28,6 +28,8 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import repository.Repository;
 import org.json.JSONArray;
+import javax.ws.rs.core.*;
+import org.json.JSONObject;
 
 /**
  * This Class is for the Web Orientation f.e.:
@@ -210,7 +212,7 @@ public class EquipmentService {
         try {
             List<String> alllines = Files.readAllLines(file.toPath());
             alllines.forEach(line -> {
-                
+
                 String timestamp = line.substring(0, 19);
                 int linebegin = line.indexOf('[');
                 int lineend = line.indexOf(']');
@@ -233,69 +235,6 @@ public class EquipmentService {
         return e.getBrand() + " " + e.getName();
     }
 
-    /**
-     * Photoupload from Herr Professor Lackinger
-     *
-     * @param file
-     * @return
-     */
-    @POST
-    @Path("uploadimage")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public void uploadImage(
-            @FormDataParam("file") InputStream fileInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileMetaData,
-            @FormDataParam("seriennummer") String seriennummer) throws Exception {
-        System.out.println("");
-        System.out.println(EVSColorizer.green() + " AT THE BIGINING " + EVSColorizer.reset());
-        System.out.println("");
-        boolean worked = false;
-        Equipment equ = repo.getEquBySer(seriennummer);
-        String UPLOAD_PATH = "uploads/equipment/";
-        File dirs = new File(UPLOAD_PATH);
-        if (!dirs.exists()) {
-            dirs.mkdirs();
-        }
-        System.out.println("");
-        System.out.println(EVSColorizer.green() + " DIRECTORY WURDE ERSTELLT " + EVSColorizer.reset());
-        System.out.println("");
-        //UPLOAD_PATH += equ.getInterneNummer();
-        try {
-            int read = 0;
-            byte[] bytes = new byte[1024];
-
-            /*if (fileMetaData.getName().endsWith(".jpg")) {
-                UPLOAD_PATH += ".jpg";
-
-            } else if (fileMetaData.getName().endsWith(".png")) {
-                UPLOAD_PATH += ".png";
-            }*/
-            System.out.println("");
-            System.out.println(EVSColorizer.green() + " KURZ BEVOR DEM FILEUPLOAD " + EVSColorizer.reset());
-            System.out.println("");
-            UPLOAD_PATH += fileMetaData.getName();
-            OutputStream out = new FileOutputStream(new File(UPLOAD_PATH));
-            while ((read = fileInputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            out.flush();
-            out.close();
-            System.out.println("");
-            System.out.println(EVSColorizer.green() + " HAT FUNKTIONIERT!!!! " + EVSColorizer.reset());
-            System.out.println("");
-            worked = true;
-        } catch (IOException e) {
-            throw new Exception("Error while uploading file. Please try again !!");
-        }
-
-        if (worked) {
-            // Update User on database
-            equ.setPhotoPath(UPLOAD_PATH);
-            repo.update(equ);
-            System.out.println(EVSColorizer.purple() + "Equipment picture successfully uploaded!" + EVSColorizer.reset());
-        }
-    }
-
     public String findRightPicture(String category) {
         switch (category) {
             case "camera":
@@ -308,4 +247,132 @@ public class EquipmentService {
                 return "";
         }
     }
+
+    @Context
+    private UriInfo context;
+    private static final String UPLOAD_FOLDER = "uploads/equipment/";
+
+    /**
+     * Returns text response to caller containing uploaded file location
+     *
+     * @return error response in case of missing parameters an internal
+     * exception or success response if file has been stored successfully
+     */
+    @POST
+    @Path("uploadimage")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String uploadFile(
+            @FormDataParam("file") InputStream uploadedInputStream,
+            @FormDataParam("file") FormDataContentDisposition fileDetail,
+            @FormDataParam("serialnumber") String serialnumber) {
+        // check if all form parameters are provided
+        JSONObject json = new JSONObject();
+
+        if (uploadedInputStream == null || fileDetail == null || serialnumber == null || serialnumber == "") {
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+            json.append("status", "failed");
+            json.append("exception", "formdataparam not correct");
+            return new Gson().toJson(json);
+        }
+        // create our destination folder, if it not exists
+        try {
+            createFolderIfNotExists(UPLOAD_FOLDER);
+        } catch (SecurityException se) {
+            json.append("status", "failed");
+            json.append("exception", "cannot create destinationfolder on vm");
+            return new Gson().toJson(json);
+        }
+        String uploadedFileLocation = UPLOAD_FOLDER + fileDetail.getFileName();
+        try {
+            saveToFile(uploadedInputStream, uploadedFileLocation);
+            Equipment equ = repo.getEquBySer(serialnumber);
+            equ.setPhotoPath(uploadedFileLocation);
+            repo.update(equ);
+        } catch (IOException e) {
+            json.append("status", "failed");
+            json.append("exception", "could not save file");
+            return new Gson().toJson(json);
+        }
+        json.append("status", "success");
+        json.append("filename", fileDetail.getFileName());
+        return new Gson().toJson(json);
+    }
+
+    /**
+     * Utility method to save InputStream data to target location/file
+     *
+     * @param inStream - InputStream to be saved
+     * @param target - full path to destination file
+     */
+    private void saveToFile(InputStream inStream, String target)
+            throws IOException {
+        OutputStream out = null;
+        int read = 0;
+        byte[] bytes = new byte[1024];
+        out = new FileOutputStream(new File(target));
+        while ((read = inStream.read(bytes)) != -1) {
+            out.write(bytes, 0, read);
+        }
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * Creates a folder to desired location if it not already exists
+     *
+     * @param dirName - full path to the folder
+     * @throws SecurityException - in case you don't have permission to create
+     * the folder
+     */
+    private void createFolderIfNotExists(String dirName)
+            throws SecurityException {
+        File theDir = new File(dirName);
+        if (!theDir.exists()) {
+            theDir.mkdir();
+        }
+    }
+
+    /**
+     * Photoupload from Herr Professor Lackinger
+     *
+     * @param file
+     * @return
+     *
+     * @POST
+     * @Path("uploadimage")
+     * @Consumes(MediaType.MULTIPART_FORM_DATA) public void uploadImage(
+     * @FormDataParam("file") InputStream fileInputStream,
+     * @FormDataParam("file") FormDataContentDisposition fileMetaData,
+     * @FormDataParam("seriennummer") String seriennummer) throws Exception {
+     * System.out.println(""); System.out.println(EVSColorizer.green() + " AT
+     * THE BIGINING " + EVSColorizer.reset()); System.out.println(""); boolean
+     * worked = false; Equipment equ = repo.getEquBySer(seriennummer); String
+     * UPLOAD_PATH = "uploads/equipment/"; File dirs = new File(UPLOAD_PATH); if
+     * (!dirs.exists()) { dirs.mkdirs(); } System.out.println("");
+     * System.out.println(EVSColorizer.green() + " DIRECTORY WURDE ERSTELLT " +
+     * EVSColorizer.reset()); System.out.println(""); //UPLOAD_PATH +=
+     * equ.getInterneNummer(); try { int read = 0; byte[] bytes = new
+     * byte[1024];
+     *
+     * /*if (fileMetaData.getName().endsWith(".jpg")) { UPLOAD_PATH += ".jpg";
+     *
+     * } else if (fileMetaData.getName().endsWith(".png")) { UPLOAD_PATH +=
+     * ".png"; } System.out.println(""); System.out.println(EVSColorizer.green()
+     * + " KURZ BEVOR DEM FILEUPLOAD " + EVSColorizer.reset());
+     * System.out.println(""); UPLOAD_PATH += fileMetaData.getName();
+     * OutputStream out = new FileOutputStream(new File(UPLOAD_PATH)); while
+     * ((read = fileInputStream.read(bytes)) != -1) { out.write(bytes, 0, read);
+     * } out.flush(); out.close(); System.out.println("");
+     * System.out.println(EVSColorizer.green() + " HAT FUNKTIONIERT!!!! " +
+     * EVSColorizer.reset()); System.out.println(""); worked = true; } catch
+     * (IOException e) { throw new Exception("Error while uploading file. Please
+     * try again !!"); }
+     *
+     * if (worked) { // Update User on database equ.setPhotoPath(UPLOAD_PATH);
+     * repo.update(equ); System.out.println(EVSColorizer.purple() + "Equipment
+     * picture successfully uploaded!" + EVSColorizer.reset()); } }
+     */
 }
