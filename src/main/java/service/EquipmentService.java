@@ -272,7 +272,9 @@ public class EquipmentService {
         if (uploadedInputStream == null || fileDetail == null || serialnumber == null || serialnumber == "") {
             System.out.println("");
             System.out.println("");
-            System.out.println("");
+            System.out.println(EVSColorizer.cyan()
+                    + "Formdata Parameter not correct"
+                    + EVSColorizer.reset());
             json.append("status", "failed");
             json.append("exception", "formdataparam not correct");
             return new Gson().toJson(json);
@@ -281,6 +283,11 @@ public class EquipmentService {
         try {
             createFolderIfNotExists(UPLOAD_FOLDER);
         } catch (SecurityException se) {
+            System.out.println("");
+            System.out.println("");
+            System.out.println(EVSColorizer.cyan()
+                    + "Destination Folder could not be created"
+                    + EVSColorizer.reset());
             json.append("status", "failed");
             json.append("exception", "cannot create destinationfolder on vm");
             return new Gson().toJson(json);
@@ -292,6 +299,11 @@ public class EquipmentService {
             equ.setPhotoPath(uploadedFileLocation);
             repo.update(equ);
         } catch (IOException e) {
+            System.out.println("");
+            System.out.println("");
+            System.out.println(EVSColorizer.cyan()
+                    + "File could not be safed (maybe because of same filename)"
+                    + EVSColorizer.reset());
             json.append("status", "failed");
             json.append("exception", "could not save file");
             return new Gson().toJson(json);
