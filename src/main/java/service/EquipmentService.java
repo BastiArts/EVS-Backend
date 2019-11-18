@@ -216,7 +216,7 @@ public class EquipmentService {
                 String timestamp = line.substring(0, 19);
                 int linebegin = line.indexOf('[');
                 int lineend = line.indexOf(']');
-                String status = line.substring(linebegin + 1, lineend - 1);
+                String status = line.substring(linebegin + 1, lineend);
                 linebegin = lineend + 1;
                 lineend = line.indexOf('-') - 1;
                 String name = line.substring(linebegin, lineend);
