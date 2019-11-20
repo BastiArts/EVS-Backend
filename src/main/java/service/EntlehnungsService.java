@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import entity.Entlehnung;
 import entity.Equipment;
 import entity.User;
+import enums.RentType;
 import evs.ldapconnection.EVSColorizer;
 
 import java.text.DateFormat;
@@ -23,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import org.json.JSONArray;
+import util.SystemUtil;
 
 /**
  * This Class is for the Web Orientation f.e.:
@@ -85,10 +87,9 @@ public class EntlehnungsService {
             @QueryParam("id") long id,
             @QueryParam("status") String status
     ) {
-        Entlehnung e;
+        Entlehnung e = repo.findEntlehnung(id);
         if (status.equalsIgnoreCase("confirmed")) {
             // Ändern des status auf ausgeborgt
-            e = repo.findEntlehnung(id);
             /*
             fromdate <= new DATE() < todate --> status - borrowed
             new DATE() < fromdate           --> future --> status - guarded
@@ -102,20 +103,27 @@ public class EntlehnungsService {
             if (e.getFromdate().before(nowdate) && e.getTodate().after(nowdate)) {
                 // borrowed
                 e.setStatus("borrowed");
+                String toLogFile = e.getUser().getFirstname() + " " + e.getUser().getLastname() + " - " + e.getEqu().getDisplayname();
+                SystemUtil.logToFile("Ausborgeverlauf", toLogFile, RentType.AUSBORGEN);
             } else if (dateFormat.format(nowdate).equals(dateFormat.format(e.getFromdate()))) {
                 // borrowed
                 e.setStatus("borrowed");
+                String toLogFile = e.getUser().getFirstname() + " " + e.getUser().getLastname() + " - " + e.getEqu().getDisplayname();
+                SystemUtil.logToFile("Ausborgeverlauf", toLogFile, RentType.AUSBORGEN);
             } else if (e.getFromdate().after(nowdate)) {
                 // guarded
                 e.setStatus("guarded");
+                String toLogFile = e.getUser().getFirstname() + " " + e.getUser().getLastname() + " - " + e.getEqu().getDisplayname();
+                SystemUtil.logToFile("Ausborgeverlauf", toLogFile, RentType.RESERVIEREN);
+                // Write a new Entry in Text File
             }
 
             e.setApproved(true);
             e = repo.confirmEntlehnung(e);
             return new Gson().toJson(repo.findPendingEntlehnungen());
         } else {
-            System.out.println(repo.declineEntlehnung(repo.findEntlehnung(id)));
-            return "Entlehnung was declined";
+            System.out.println(repo.declineEntlehnung(e));
+            return new Gson().toJson(repo.findPendingEntlehnungen());
         }
     }
 
@@ -139,45 +147,4 @@ public class EntlehnungsService {
     public String findEquBySeriel(@PathParam("serie") String serialnumber) {
         return gson.toJson(repo.getEquBySer(serialnumber));
     }
-    /*
-    
-
-    @GET
-    @Path("getdateexample")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getCurrentDate() {
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
-    @GET
-    @Path("editentlehnung")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String editentlehnung(
-            @QueryParam("id") long id,
-            @QueryParam("status") String status
-    ) {
-        if (status.equalsIgnoreCase("confirmed")) {
-            // Ändern des status auf ausgeborgt
-            Entlehnung e = repo.findEntlehnung(id);
-            if (dateFormat.format(new Date()).equalsIgnoreCase(dateFormat.format(e.getFromdate()))) {
-                // Wenn es der heutige Tag ist --> ausborgen
-                e.setStatus("verborgt");
-            }
-            e.setApproved(true);
-            e = repo.confirmEntlehnung(e);
-            return new Gson().toJson(repo.findAllEntlehnungen());
-        } else {
-            System.out.println(repo.declineEntlehnung(repo.findEntlehnung(id)));
-        }
-        return "";
-    }
-
-    @GET
-    @Path("getanfragen")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getAllAnfragen() {
-        return new Gson().toJson(repo.getAllAnfragen());
-    }*/
 }

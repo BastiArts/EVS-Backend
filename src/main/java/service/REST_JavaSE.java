@@ -23,7 +23,6 @@ public class REST_JavaSE {
     }
 
     public static void main(String[] args) throws IOException {
-        SystemUtil.logToFile("Ausborgeverlauf", "Manuel Fadljevic - Panasonic GH4", RentType.AUSBORGEN);
         // Server starten
         final org.glassfish.grizzly.http.server.HttpServer server = startServer();
         // Static Content - Im Projekt-Verzeichnis "public" liegen die html-Files : localhost:8080/index.html

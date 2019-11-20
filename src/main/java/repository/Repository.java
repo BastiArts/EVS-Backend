@@ -94,11 +94,11 @@ public class Repository {
     }
 
     public List getAvailableEquipment() {
-        return em.createQuery("SELECT equ FROM evs_equipment equ WHERE equ.id NOT IN (SELECT ent.equ.id FROM evs_entlehnung ent WHERE ent.status != 'zurückgegeben')", Equipment.class).getResultList();
+        return em.createQuery("SELECT equ FROM evs_equipment equ WHERE equ.id NOT IN (SELECT ent.equ.id FROM evs_entlehnung ent WHERE ent.status != :status)", Equipment.class).setParameter("status", "returned").getResultList();
     }
 
     public List getEquipmentFromUser(String username) {
-        return em.createQuery("SELECT ent.equ FROM evs_entlehnung ent WHERE ent.user.username = :username AND ent.status != 'zurückgegeben'", Equipment.class).setParameter("username", username).getResultList();
+        return em.createQuery("SELECT ent.equ FROM evs_entlehnung ent WHERE ent.user.username = :username AND ent.status != :status", Equipment.class).setParameter("username", username).setParameter("status", "returned").getResultList();
     }
 
     public Equipment getEquBySer(String seriennummer) {

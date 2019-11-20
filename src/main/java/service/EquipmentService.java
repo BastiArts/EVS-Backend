@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.*;
@@ -223,6 +224,7 @@ public class EquipmentService {
                 String equname = line.substring(lineend + 2);
                 logentries.add(new LogEntry(timestamp, status, name, equname));
             });
+            Collections.reverse(logentries);
             return new Gson().toJson(logentries);
         } catch (Exception e) {
             e.printStackTrace();
@@ -296,7 +298,7 @@ public class EquipmentService {
         try {
             saveToFile(uploadedInputStream, uploadedFileLocation);
             Equipment equ = repo.getEquBySer(serialnumber);
-            equ.setPhotoPath(uploadedFileLocation);
+            equ.setPhotoPath("http://vm88.htl-leonding.ac.at/" + uploadedFileLocation);
             repo.update(equ);
         } catch (IOException e) {
             System.out.println("");
@@ -346,45 +348,4 @@ public class EquipmentService {
             theDir.mkdir();
         }
     }
-
-    /**
-     * Photoupload from Herr Professor Lackinger
-     *
-     * @param file
-     * @return
-     *
-     * @POST
-     * @Path("uploadimage")
-     * @Consumes(MediaType.MULTIPART_FORM_DATA) public void uploadImage(
-     * @FormDataParam("file") InputStream fileInputStream,
-     * @FormDataParam("file") FormDataContentDisposition fileMetaData,
-     * @FormDataParam("seriennummer") String seriennummer) throws Exception {
-     * System.out.println(""); System.out.println(EVSColorizer.green() + " AT
-     * THE BIGINING " + EVSColorizer.reset()); System.out.println(""); boolean
-     * worked = false; Equipment equ = repo.getEquBySer(seriennummer); String
-     * UPLOAD_PATH = "uploads/equipment/"; File dirs = new File(UPLOAD_PATH); if
-     * (!dirs.exists()) { dirs.mkdirs(); } System.out.println("");
-     * System.out.println(EVSColorizer.green() + " DIRECTORY WURDE ERSTELLT " +
-     * EVSColorizer.reset()); System.out.println(""); //UPLOAD_PATH +=
-     * equ.getInterneNummer(); try { int read = 0; byte[] bytes = new
-     * byte[1024];
-     *
-     * /*if (fileMetaData.getName().endsWith(".jpg")) { UPLOAD_PATH += ".jpg";
-     *
-     * } else if (fileMetaData.getName().endsWith(".png")) { UPLOAD_PATH +=
-     * ".png"; } System.out.println(""); System.out.println(EVSColorizer.green()
-     * + " KURZ BEVOR DEM FILEUPLOAD " + EVSColorizer.reset());
-     * System.out.println(""); UPLOAD_PATH += fileMetaData.getName();
-     * OutputStream out = new FileOutputStream(new File(UPLOAD_PATH)); while
-     * ((read = fileInputStream.read(bytes)) != -1) { out.write(bytes, 0, read);
-     * } out.flush(); out.close(); System.out.println("");
-     * System.out.println(EVSColorizer.green() + " HAT FUNKTIONIERT!!!! " +
-     * EVSColorizer.reset()); System.out.println(""); worked = true; } catch
-     * (IOException e) { throw new Exception("Error while uploading file. Please
-     * try again !!"); }
-     *
-     * if (worked) { // Update User on database equ.setPhotoPath(UPLOAD_PATH);
-     * repo.update(equ); System.out.println(EVSColorizer.purple() + "Equipment
-     * picture successfully uploaded!" + EVSColorizer.reset()); } }
-     */
 }
