@@ -98,7 +98,11 @@ public class Repository {
     }
 
     public List getEquipmentFromUser(String username) {
-        return em.createQuery("SELECT ent.equ FROM evs_entlehnung ent WHERE ent.user.username = :username AND ent.status != :status", Equipment.class).setParameter("username", username).setParameter("status", "returned").getResultList();
+        return em.createQuery("SELECT ent FROM evs_entlehnung ent WHERE ent.user.username = :username AND ent.status != :status1 AND ent.status != :status2", Equipment.class)
+                .setParameter("username", username)
+                .setParameter("status1", "returned")
+                .setParameter("status2", "pending")
+                .getResultList();
     }
 
     public Equipment getEquBySer(String seriennummer) {
@@ -248,5 +252,9 @@ public class Repository {
 
     public List getAllEntlehnungen() {
         return em.createQuery("SELECT e FROM evs_entlehnung e").getResultList();
+    }
+
+    public List findEntBySeriel(String serialnumber) {
+        return em.createQuery("SELECT ent FROM evs_entlehnung ent WHERE ent.equ.serialnumber = :serial").setParameter("serial", serialnumber).getResultList();
     }
 }

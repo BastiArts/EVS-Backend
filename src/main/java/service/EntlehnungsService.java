@@ -24,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import util.SystemUtil;
 
 /**
@@ -142,9 +143,19 @@ public class EntlehnungsService {
     }
 
     @GET
-    @Path("getequbyser/{serie}")
+    @Path("rentDates/{serie}")
     @Produces(MediaType.APPLICATION_JSON)
     public String findEquBySeriel(@PathParam("serie") String serialnumber) {
-        return gson.toJson(repo.getEquBySer(serialnumber));
+
+        List<Entlehnung> ent = repo.findEntBySeriel(serialnumber);
+        JSONArray array = new JSONArray();
+        for (Entlehnung e : ent) {
+            JSONObject json = new JSONObject();
+            json.append("fromdate", e.getFromdate() + "");
+            json.append("todate", e.getTodate() + "");
+            json.append("test", "help me SOS");
+            array.put(json);
+        }
+        return array.toString();
     }
 }
