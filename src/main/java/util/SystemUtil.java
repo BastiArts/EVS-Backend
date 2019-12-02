@@ -5,17 +5,25 @@ import java.io.*;
 import java.nio.channels.Channels;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+import java.util.logging.Level;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.glassfish.hk2.utilities.reflection.Logger;
 
 /**
  * @author Sebastian Schiefermayr
  */
 public class SystemUtil {
-    /** 
+
+    /**
      * @param title - Filename
      * @param message - e.g. Sebastian Schiefermayr - Panasonic GH4
-     * @param type - [AUSBORGEN] | [RESERVIEREN] | [RETOUR]  
-     * Log Format: 07.10.2019 [AUSBORGEN] Sebastian Schiefermayr - Panasonic GH4
+     * @param type - [AUSBORGEN] | [RESERVIEREN] | [RETOUR] Log Format:
+     * 07.10.2019 [AUSBORGEN] Sebastian Schiefermayr - Panasonic GH4
      */
     public static void logToFile(String title, String message, RentType type) {
         String logDirPath = "log";
@@ -29,7 +37,7 @@ public class SystemUtil {
         String logMessage = dtf.format(now) + " [" + type.toString() + "] " + message;
         if (!logDir.exists()) {
             logDir.mkdir();
-            
+
         }
         System.out.println("Log Ordner: " + logDir.getAbsolutePath());
         if (!logFile.exists()) {
@@ -50,4 +58,7 @@ public class SystemUtil {
             e.printStackTrace();
         }
     }
+
+
+    
 }

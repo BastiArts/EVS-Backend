@@ -4,6 +4,7 @@ import java.util.*;
 import javax.naming.*;
 import javax.naming.directory.*;
 import static javax.naming.directory.SearchControls.*;
+import util.EmailUtil;
 
 /**
  * LDAP-User.
@@ -47,10 +48,10 @@ public final class LdapUser {
     private String lastname;
     private String classId;
 
-    public final String domain = "edu.htl-leonding.ac.at";
-    public final String server = "addc01.edu.htl-leonding.ac.at";
-    public final String baseDN = "ou=HTL,dc=edu,dc=htl-leonding,dc=ac,dc=at";
-    public final int port = 636;
+    public final String domain = EmailUtil.getInstance().getConfigProps().getProperty("ldap.domain");
+    public final String server = EmailUtil.getInstance().getConfigProps().getProperty("ldap.serverURL");
+    public final String baseDN = EmailUtil.getInstance().getConfigProps().getProperty("ldap.baseDN");
+    public final int port = Integer.parseInt(EmailUtil.getInstance().getConfigProps().getProperty("ldap.port"));
 
     /**
      * Konstruktor.
@@ -71,7 +72,7 @@ public final class LdapUser {
 
         // Zertifikat 
         //System.setProperty("javax.net.ssl.trustStore", "/Users/manuel/Documents/EVS/EVS-Backend/keystore.bin");
-        System.setProperty("javax.net.ssl.trustStore", "/home/server/keystore.bin");
+        System.setProperty("javax.net.ssl.trustStore", EmailUtil.getInstance().getConfigProps().getProperty("ldap.keystorePath"));
 
         // LDAP-Properties
         Hashtable props = new Hashtable();
