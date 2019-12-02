@@ -2,11 +2,11 @@
 ## Config File: config.properties
 === EMAIL ===
 <dl>
-  <dd>mail.host = webmail.bastiarts.com</dd>
-<dd>mail.port = 25</dd>
-<dd>mail.username = evs@bastiarts.com</dd>
-<dd>mail.password = ^tSv327x</dd>
-<dd>mail.from = evs@bastiarts.com</dd>
+  <dd>mail.host = HOST</dd>
+<dd>mail.port = PORT</dd>
+<dd>mail.username = USER</dd>
+<dd>mail.password = PASSWORD</dd>
+<dd>mail.from = FROM</dd>
 </dl>
 === LDAP ===
 <dl>
