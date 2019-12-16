@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import util.EmailUtil;
 
 /**
  *
@@ -223,6 +224,7 @@ public class Repository {
         em.getTransaction().begin();
         em.persist(e);
         em.getTransaction().commit();
+        // EmailUtil.getInstance().sendNotification(, "Test EVS", "Sers Des is a Test");
         return e;
     }
 

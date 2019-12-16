@@ -28,7 +28,7 @@ public class REST_JavaSE {
         final org.glassfish.grizzly.http.server.HttpServer server = startServer();
         // Static Content - Im Projekt-Verzeichnis "public" liegen die html-Files : localhost:8080/index.html
         server.getServerConfiguration().addHttpHandler(new StaticHttpHandler("public"), "/");
-        EmailUtil.getInstance().sendNotification("basti@bastiarts.com", "Test EVS", "Sers Des is a Test");
+        
         System.out.println(String.format("Server startet at %s\nHit enter to stop ...", BASE_URI));
         System.in.read();
         server.stop();

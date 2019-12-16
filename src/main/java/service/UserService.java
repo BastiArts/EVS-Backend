@@ -57,10 +57,19 @@ public class UserService {
             //endUser.setPicturePath(username + "_PB.jpg");
             System.out.println("");
             System.out.println("This is user: " + endUser.getFirstname());
-            repo.insertUser(endUser);
-            String retString = gsonObject.toJson(endUser);
-            System.out.println(retString);
-            return retString;
+            // Wenn user in der DB schon vorhanden
+            if (repo.findUser(endUser.getUsername()) == null) {
+                if (!endUser.isStudent()) {
+                    endUser.setEmail(endUser.getFirstname().charAt(0) + "." + endUser.getLastname() + "@htl-leonding.ac.at");
+                    endUser.setEmail(endUser.getEmail().toLowerCase());
+                }
+                repo.insertUser(endUser);
+                String retString = gsonObject.toJson(endUser);
+                System.out.println(retString);
+                return retString;
+            } else {
+                return gsonObject.toJson(repo.findUser(endUser.getUsername()));
+            }
         } else {
             return "{}";
         }
@@ -151,15 +160,13 @@ public class UserService {
             return new Gson().toJson(json);
         }
         String type = fileDetail.getType();
-        String uploadedFileLocation = UPLOAD_FOLDER + userid + type;
-        System.out.println("");
-        System.out.println("");
+        String uploadedFileLocation = UPLOAD_FOLDER + userid  + "_" + fileDetail.getFileName();
         System.out.println(EVSColorizer.cyan()
                 + fileDetail.getType()
                 + EVSColorizer.reset());
         try {
             saveToFile(uploadedInputStream, uploadedFileLocation);
-            repo.updateUser(userid, UPLOAD_FOLDER);
+            repo.updateUser(userid, uploadedFileLocation);
         } catch (IOException e) {
             System.out.println("");
             System.out.println("");
