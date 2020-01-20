@@ -8,6 +8,7 @@ import entity.User;
 import evs.ldapconnection.EVSColorizer;
 import evs.ldapconnection.LdapAuthException;
 import evs.ldapconnection.LdapException;
+import evs.ldapconnection.LdapUser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -16,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.glassfish.jersey.media.multipart.*;
@@ -50,7 +53,8 @@ public class UserService {
 
         System.out.println(EVSColorizer.RED + "Some data are incomming: " + username + EVSColorizer.reset());
         User endUser = repo.proofLogin(username, password);
-
+        // Inits a List of Teachers in UserUtil
+        repo.findTeachers();
         if (endUser != null) {
             Gson gsonObject = new Gson();
 
@@ -107,8 +111,8 @@ public class UserService {
     @POST
     @Path("updateUser")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String setProfilePath(String user) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public String updateUser(String user) {
         Gson gson = new Gson();
         User u = gson.fromJson(user, User.class);
         repo.updateUser(u);
@@ -135,7 +139,7 @@ public class UserService {
             @FormDataParam("userid") String userid) {
         // check if all form parameters are provided
         JSONObject json = new JSONObject();
-
+        User user = null;
         if (uploadedInputStream == null || fileDetail == null || userid == null || userid == "") {
             System.out.println("");
             System.out.println("");
@@ -160,13 +164,13 @@ public class UserService {
             return new Gson().toJson(json);
         }
         String type = fileDetail.getType();
-        String uploadedFileLocation = UPLOAD_FOLDER + userid  + "_" + fileDetail.getFileName();
+        String uploadedFileLocation = UPLOAD_FOLDER + userid + "_" + fileDetail.getFileName();
         System.out.println(EVSColorizer.cyan()
                 + fileDetail.getType()
                 + EVSColorizer.reset());
         try {
             saveToFile(uploadedInputStream, uploadedFileLocation);
-            repo.updateUser(userid, uploadedFileLocation);
+            user = repo.updateUser(userid, uploadedFileLocation);
         } catch (IOException e) {
             System.out.println("");
             System.out.println("");
@@ -179,7 +183,14 @@ public class UserService {
         }
         json.append("status", "success");
         json.append("filename", fileDetail.getFileName());
-        return new Gson().toJson(json);
+        return new Gson().toJson(user);
+    }
+
+    @GET
+    @Path("getAllStudents")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<User> getAllStudents(){
+        return repo.getAllStudents();
     }
 
     /**

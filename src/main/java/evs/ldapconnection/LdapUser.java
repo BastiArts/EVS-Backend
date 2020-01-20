@@ -1,6 +1,9 @@
 package evs.ldapconnection;
 
+import entity.User;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.*;
 import javax.naming.directory.*;
 import static javax.naming.directory.SearchControls.*;
@@ -90,6 +93,9 @@ public final class LdapUser {
             controls.setSearchScope(SUBTREE_SCOPE);
             NamingEnumeration<SearchResult> renum = context.search(baseDN,
                     "cn=" + userId, controls);
+
+            // GET ALL STUDENTS FOR OUR SELECT LIST OF RENTING
+            this.loadStudents(context.search(baseDN, "cn=it*", controls));
 
             // ...wenn User nicht gefunden, dann...
             if (!renum.hasMore()) {
@@ -208,5 +214,24 @@ public final class LdapUser {
     public String getClassId() {
         return classId;
     }
+    private List<User> allStudents = new LinkedList<>();
+    private void loadStudents(NamingEnumeration<SearchResult> result) {
+        try {
+            while (result.hasMore()) {
+                SearchResult res = result.next();
+                User u = new User();
+                u.setUsername(res.getAttributes().get("CN").toString());
+                String[] displayname = res.getAttributes().get("displayname").toString().split(" ");
+                u.setFirstname(displayname[0]);
+                u.setLastname(displayname[1]);
+                allStudents.add(u);
+            }
+        } catch (NamingException ex) {
+            Logger.getLogger(LdapUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    public List<User> getAllStudents() {
+        return this.allStudents; 
+    } 
 }

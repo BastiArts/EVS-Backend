@@ -9,10 +9,13 @@ import evs.ldapconnection.LdapException;
 import evs.ldapconnection.LdapUser;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import util.EmailUtil;
+import util.UserUtil;
 
 /**
  *
@@ -124,6 +127,7 @@ public class Repository {
     public User proofLogin(String username, String password) throws LdapException, LdapAuthException {
         try {
             LdapUser ldapUser = new LdapUser(username, password.toCharArray());
+            allUsers = ldapUser.getAllStudents();
             User user = new User(ldapUser.getUserId(), ldapUser.getFirstname(), ldapUser.getLastname(), ldapUser.getClassId(), ldapUser.isStudent());
             System.out.println(user.getUsername() + " hat den Namen: " + user.getFirstname());
             return user;
@@ -134,6 +138,11 @@ public class Repository {
             return null;
         }
 
+    }
+    public List<User> allUsers = new LinkedList<>();
+
+    public List<User> getAllStudents() {
+        return this.allUsers;
     }
 
     /*
@@ -169,13 +178,13 @@ public class Repository {
     * Updates a user for changing Photopath
     *
      */
-    public String updateUser(String username, String photoPath) {
+    public User updateUser(String username, String photoPath) {
         em.getTransaction().begin();
         User u = em.find(User.class, username);
         u.setPicturePath(photoPath);
         em.merge(u);
         em.getTransaction().commit();
-        return "Photopath for user updated!";
+        return u;
     }
 
     /*                                              *\
@@ -224,7 +233,7 @@ public class Repository {
         em.getTransaction().begin();
         em.persist(e);
         em.getTransaction().commit();
-        // EmailUtil.getInstance().sendNotification(, "Test EVS", "Sers Des is a Test");
+//        EmailUtil.getInstance().sendNotification(, "Test EVS", "Sers Des is a Test");
         return e;
     }
 
@@ -257,5 +266,14 @@ public class Repository {
 
     public List findEntBySeriel(String serialnumber) {
         return em.createQuery("SELECT ent FROM evs_entlehnung ent WHERE ent.equ.serialnumber = :serial").setParameter("serial", serialnumber).getResultList();
+    }
+
+    public void findTeachers() {
+        em.getTransaction().begin();
+        Query q = em.createQuery("SELECT t from User t where t.isStudent = :STUDENT", User.class);
+        q.setParameter("STUDENT", false);
+        UserUtil.getInstance().setTeachers(q.getResultList());
+        System.out.println(UserUtil.getInstance().getTeachers().size());
+        em.getTransaction().commit();
     }
 }

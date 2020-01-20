@@ -20,12 +20,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import repository.Repository;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import util.EmailUtil;
 import util.SystemUtil;
+import util.UserUtil;
 
 /**
  * This Class is for the Web Orientation f.e.:
@@ -73,7 +76,13 @@ public class EntlehnungsService {
     ) throws ParseException {
         User user = repo.findUser(username);
         Equipment equ = repo.getEquBySer(serial);
-
+        // SEND EMAIL TO TEACHER
+        EmailUtil.getInstance().sendNotification(
+                String.join(",", UserUtil.getInstance()
+                        .getTeachers()
+                        .stream()
+                        .map(User::getEmail).collect(Collectors.toList())),
+                "[EVS] Entlehnung", user.getFirstname() + " " + user.getLastname() + " hat eine Entlehnung für: " + equ.getDisplayname() + "(" + equ.getInterneNummer() + ") erstellt.");
         Date fromdate1 = dateFormat.parse(fromdate);
         Date todate1 = dateFormat.parse(todate);
         Entlehnung entl = new Entlehnung(fromdate1, todate1, "pending", user, equ);

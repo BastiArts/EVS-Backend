@@ -5,11 +5,14 @@
  */
 package util;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -20,7 +23,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import service.REST_JavaSE;
 
 /**
  *
@@ -29,19 +31,19 @@ import service.REST_JavaSE;
 public class EmailUtil {
 
     private static EmailUtil instance = null;
-    
+
     private final Session session;
-    
+
     // Props for reading the Config
     private Properties confProp = new Properties();
-    
+
     public static EmailUtil getInstance() {
         if (instance == null) {
             instance = new EmailUtil();
         }
         return instance;
     }
-    
+
     private EmailUtil() {
         session = initEmailNotification();
     }
@@ -53,7 +55,7 @@ public class EmailUtil {
 
             // load the config file
             confProp.load(input);
-            
+
             // Setup the Mail-Account
             prop.put("mail.smtp.auth", true);
             prop.put("mail.smtp.starttls.enable", "true");
@@ -76,15 +78,15 @@ public class EmailUtil {
 
     public void sendNotification(final String receiverMail, final String subject, final String messageText) {
 
-        if (!receiverMail.isEmpty()) {            
+        if (!receiverMail.isEmpty()) {
+            System.out.println("RECEIVER MAILS: " + receiverMail);
             try {
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(this.confProp.getProperty("mail.from")));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverMail));
                 message.setSubject(subject);
-
                 MimeBodyPart mimeBodyPart = new MimeBodyPart();
-                mimeBodyPart.setContent(messageText, "text/html");
+                mimeBodyPart.setContent(messageText, "text/html;charset=UTF-8");
 
                 Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart(mimeBodyPart);
@@ -96,9 +98,46 @@ public class EmailUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("EMPTY RECEIVER");
         }
     }
-    public Properties getConfigProps(){
+
+    public Properties getConfigProps() {
         return this.confProp;
+    }
+    /** EMAIL TEMPLATE*/
+    protected String readEmailFromHtml(String filePath, Map<String, String> input) {
+        String msg = readContentFromFile(filePath);
+        try {
+            Set<Entry<String, String>> entries = input.entrySet();
+            for (Map.Entry<String, String> entry : entries) {
+                msg = msg.replace(entry.getKey().trim(), entry.getValue().trim());
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return msg;
+    }
+
+    private String readContentFromFile(String fileName) {
+        StringBuffer contents = new StringBuffer();
+
+        try {
+            //use buffering, reading one line at a time
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            try {
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    contents.append(line);
+                    contents.append(System.getProperty("line.separator"));
+                }
+            } finally {
+                reader.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return contents.toString();
     }
 }
