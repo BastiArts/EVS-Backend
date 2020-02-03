@@ -150,6 +150,9 @@ public class EmailUtil {
 
     /**
      * EMAIL TEMPLATE
+     * @param filePath - Path to the HTML Template
+     * @param input - Placeholder Map which will be replaced in the mail
+     * @return HTML Code as String
      */
     protected String readEmailFromHtml(String filePath, Map<String, String> input) {
         String msg = readContentFromFile(filePath);

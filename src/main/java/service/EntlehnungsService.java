@@ -50,7 +50,7 @@ public class EntlehnungsService {
     /**
      * Test message for testing if the server is running
      *
-     * @return
+     * @return Test-Message
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)

@@ -51,6 +51,7 @@ public class Repository {
      * Starts a transaction to communicate with the database and persists an
      * Object into the database. Finally a commit happens to make sure the
      * Object is pushing up into database
+     * @param e - Equipment
      */
     public void add(Equipment e) {
         em.getTransaction().begin(); //Starts a transaction with the database
@@ -61,6 +62,7 @@ public class Repository {
     /**
      * Is the same as: SELECT e FROM evs_equipment e This command gets all
      * elements of Equipment.class in a List from database
+     * @return List of Equiment
      */
     public List<Equipment> getEquipment() {
         return em.createNamedQuery("Equipment.findAll", Equipment.class)
@@ -121,7 +123,7 @@ public class Repository {
      *
      * @param username and
      * @param password with the HTL School LDAP (For user login)
-     * @return
+     * @return Logged in User
      * @throws evs.ldapconnection.LdapException
      * @throws evs.ldapconnection.LdapAuthException
      */

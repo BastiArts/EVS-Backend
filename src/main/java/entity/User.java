@@ -34,7 +34,7 @@ public class User implements Serializable {
      * @param firstname - Firstname of the authenticated User
      * @param lastname - Lastname -||-
      * @param schoolclass - e.g. 4AHITM, 3AHITM,...
-     * @param role - Defines if the User is a Student or a Teacher
+     * @param isStudent - Defines if the User is a Student or a Teacher
      */
     public User(String username, String firstname, String lastname, String schoolclass, boolean isStudent) {
         this.username = username;

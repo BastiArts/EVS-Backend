@@ -8,13 +8,9 @@ package service;
  * or what works 2. PUSH Program under Git -> Remote -> Push...
  */
 import com.google.gson.Gson;
-import entity.Entlehnung;
 import entity.Equipment;
 import entity.LogEntry;
-import entity.User;
 import evs.ldapconnection.EVSColorizer;
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,15 +20,12 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import repository.Repository;
-import org.json.JSONArray;
 import javax.ws.rs.core.*;
 import org.json.JSONObject;
 
@@ -52,7 +45,7 @@ public class EquipmentService {
     /**
      * Test message for testing if the server is running
      *
-     * @return
+     * @return Test-Message
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -64,7 +57,7 @@ public class EquipmentService {
     /**
      * Some test initialization for equipment
      *
-     * @return
+     * @return Init
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -108,8 +101,8 @@ public class EquipmentService {
     /**
      * Method returns a list of all borrowed equipment to the associated user.
      * This list is displayed to the user on the client under 'Mein Equipment'
-     *
-     * @return
+     * @param username - Username
+     * @return Equipment by User as JSON
      */
     @GET
     @Path("find/{username}")
@@ -124,7 +117,7 @@ public class EquipmentService {
      * Method returns a list of all available equipment to the client, who wants
      * to borrow some new stuff
      *
-     * @return
+     * @return Equipment String
      */
     @GET
     @Path("findAvailable")
@@ -138,8 +131,8 @@ public class EquipmentService {
      * Gets an equipment from the Front-End (or testing applications) and
      * inserts it into the database
      *
-     * @param e
-     * @return
+     * @param equ Equipment
+     * @return Equipment as String
      */
     @POST
     @Path("addEquipment")
@@ -156,7 +149,8 @@ public class EquipmentService {
     /**
      * Delete existing equipment out of database
      *
-     * @param e
+     * @param e Equipment
+     * @return Equipment as String
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -172,7 +166,8 @@ public class EquipmentService {
     /**
      * Update existing Equipment
      *
-     * @param e
+     * @param e Equipment
+     * @return Equipment String
      */
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -187,7 +182,7 @@ public class EquipmentService {
     /**
      * Send the log entries as List of LogEntry
      *
-     * @param none
+     * @return Logs as String
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -206,7 +201,8 @@ public class EquipmentService {
     /**
      * Send the log entries as List of LogEntry
      *
-     * @param none
+     * @param filename - Filename
+     * @return - Returns the Log as String
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -263,6 +259,10 @@ public class EquipmentService {
      *
      * @return error response in case of missing parameters an internal
      * exception or success response if file has been stored successfully
+     * 
+     * @param uploadedInputStream - Stream with ImageCode
+     * @param fileDetail - Meta info
+     * @param serialnumber - Serialnumber
      */
     @POST
     @Path("uploadimage")
@@ -354,7 +354,10 @@ public class EquipmentService {
     }
     
     /** HANNA PART */
-    /** NOT WORKING*/
+    /** NOT WORKING
+     * @throws FileNotFoundException - if file not found 
+     * @return Exported logs as String
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("exportAllLogs")

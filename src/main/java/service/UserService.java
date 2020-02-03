@@ -37,9 +37,9 @@ public class UserService {
      * Login Path with parameters to proof if the username and password is the
      * same as the username and password from the school
      *
-     * @param username
-     * @param password
-     * @return
+     * @param username - Username
+     * @param password - Password
+     * @return User JSON
      * @throws evs.ldapconnection.LdapException
      * @throws evs.ldapconnection.LdapAuthException
      */
@@ -81,7 +81,7 @@ public class UserService {
 
     /**
      *
-     * @return
+     * @return Test JWT
      */
     @GET
     @Path("jwtTest")
@@ -93,7 +93,7 @@ public class UserService {
     /**
      * Just a short message for testing if the server is running
      *
-     * @return
+     * @return Test Message
      */
     @GET
     @Path("msg")
@@ -105,8 +105,8 @@ public class UserService {
     /**
      * Updates an existing user, if picturePath changes or something else
      *
-     * @param user
-     * @return
+     * @param user - User
+     * @return User JSON
      */
     @POST
     @Path("updateUser")
