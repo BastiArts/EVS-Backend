@@ -94,9 +94,13 @@ public final class LdapUser {
             NamingEnumeration<SearchResult> renum = context.search(baseDN,
                     "cn=" + userId, controls);
 
-            // GET ALL STUDENTS FOR OUR SELECT LIST OF RENTING
-            this.loadStudents(context.search(baseDN, "cn=it*", controls));
-
+            // GET ALL STUDENTS FOR OUR SELECT LIST OF RENTING 
+            /**
+             * cn=it* filters all MEDT Students
+             */
+            if (allStudents.isEmpty()) {
+                this.loadStudents(context.search(baseDN, "cn=it*", controls));
+            }
             // ...wenn User nicht gefunden, dann...
             if (!renum.hasMore()) {
                 throw new LdapException("Cannot locate user information for " + userId);
@@ -214,16 +218,25 @@ public final class LdapUser {
     public String getClassId() {
         return classId;
     }
-    private List<User> allStudents = new LinkedList<>();
+    private List<User> allStudents = new ArrayList<>();
+
     private void loadStudents(NamingEnumeration<SearchResult> result) {
         try {
             while (result.hasMore()) {
                 SearchResult res = result.next();
+                //   System.out.println(EVSColorizer.RED + res.getAttributes().get("displayname") + EVSColorizer.RESET);
                 User u = new User();
-                u.setUsername(res.getAttributes().get("CN").toString());
+                u.setUsername(res.getAttributes().get("CN").toString().split(" ")[1]);
                 String[] displayname = res.getAttributes().get("displayname").toString().split(" ");
-                u.setFirstname(displayname[0]);
-                u.setLastname(displayname[1]);
+                //    System.out.println(EVSColorizer.YELLOW + "NAMES: " + displayname.length + EVSColorizer.RESET);
+                if (displayname.length >= 4) {
+                    u.setFirstname(displayname[3]);
+                    u.setLastname(displayname[1] + " " + displayname[2]);
+                } else {
+                    u.setFirstname(displayname[2]);
+                    u.setLastname(displayname[1]);
+                }
+                u.setIsStudent(true);
                 allStudents.add(u);
             }
         } catch (NamingException ex) {
@@ -232,6 +245,6 @@ public final class LdapUser {
     }
 
     public List<User> getAllStudents() {
-        return this.allStudents; 
-    } 
+        return this.allStudents;
+    }
 }

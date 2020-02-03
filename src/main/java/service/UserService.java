@@ -189,8 +189,8 @@ public class UserService {
     @GET
     @Path("getAllStudents")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> getAllStudents(){
-        return repo.getAllStudents();
+    public String getAllStudents() {
+        return new Gson().toJson(repo.getAllStudents());
     }
 
     /**

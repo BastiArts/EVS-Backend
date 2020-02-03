@@ -1,14 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package util;
 
+import entity.Entlehnung;
+import entity.Equipment;
+import entity.User;
+import enums.NotificationType;
+import evs.ldapconnection.EVSColorizer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -33,6 +34,8 @@ public class EmailUtil {
     private static EmailUtil instance = null;
 
     private final Session session;
+    
+    private static final String PREFIX = "[EVS] ";
 
     // Props for reading the Config
     private Properties confProp = new Properties();
@@ -75,18 +78,56 @@ public class EmailUtil {
         }
         return null;
     }
-
-    public void sendNotification(final String receiverMail, final String subject, final String messageText) {
-
+    
+    public void sendNotification(final String receiverMail, final NotificationType type, Equipment eq, User user, Entlehnung entl) {
+           String subject = PREFIX;
         if (!receiverMail.isEmpty()) {
-            System.out.println("RECEIVER MAILS: " + receiverMail);
+            System.out.println(EVSColorizer.CYAN + "RECEIVER MAILS: " + receiverMail + EVSColorizer.RESET);
             try {
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(this.confProp.getProperty("mail.from")));
-                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverMail));
-                message.setSubject(subject);
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("basti@bastiarts.com")); // CHANGE TO receiverMail
+                
                 MimeBodyPart mimeBodyPart = new MimeBodyPart();
-                mimeBodyPart.setContent(messageText, "text/html;charset=UTF-8");
+                Map<String, String> flags = new HashMap<String, String>();
+                String htmlText = "";
+                switch (type) {
+                    case RETOUR:
+                        //Set key values
+                        flags.put("#STUDENT#", user.getFirstname() + " " + user.getLastname());
+                        flags.put("#EQUIPMENT#", eq.getDisplayname() + " (" + eq.getInternenummer() + ")");
+                        flags.put("#CONF_LINK#", this.confProp.getProperty("retour.confirmLink") + entl.getId());
+                        flags.put("#DENY_LINK#", this.confProp.getProperty("retour.denyLink") + entl.getId());
+                        htmlText = readEmailFromHtml("emailTemplates/EquipmentRetour.html", flags);
+                        subject += "Rückgabe von " + " (" + eq.getInternenummer() + ") " + eq.getDisplayname();
+                        break;
+                    case REQUEST:
+                        flags.put("#STUDENT#", user.getFirstname() + " " + user.getLastname());
+                        flags.put("#EQUIPMENT#", eq.getDisplayname() + " (" + eq.getInternenummer() + ")");
+                        flags.put("#CONF_LINK#", this.confProp.getProperty("retour.confirmLink") + entl.getId());
+                        flags.put("#DENY_LINK#", this.confProp.getProperty("retour.denyLink") + entl.getId());
+                        htmlText = readEmailFromHtml("emailTemplates/EquipmentAusborgeRequest.html", flags);
+                        subject += "Entlehnung von " + " (" + eq.getInternenummer() + ") " + eq.getDisplayname();
+                        break;
+                    case CONFIRMATION_TEACHER: // Dont know if used
+                        htmlText = "";
+                        break;
+                    case CONFIRMATION_STUDENT: // Sends the student a mail, that the teacher has confirmed the request
+                        flags.put("#STUDENT#", user.getFirstname() + " " + user.getLastname());
+                        flags.put("#EQUIPMENT#", eq.getDisplayname() + " (" + eq.getInternenummer() + ")");
+                        
+                        htmlText = "";
+                        break;
+                    case REMINDER:
+                        htmlText = "";
+                        subject += "Erinnerung: Rückgabe von " + eq.getDisplayname() + " am " + entl.getTodate();
+                        break;
+                    default:
+                        htmlText = "ERROR! Diesen Fehler darfst du behalten! Glückwunsch!";
+                        break;
+                }
+                message.setSubject(subject);
+                mimeBodyPart.setContent(htmlText, "text/html;charset=UTF-8");
 
                 Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart(mimeBodyPart);
@@ -106,7 +147,10 @@ public class EmailUtil {
     public Properties getConfigProps() {
         return this.confProp;
     }
-    /** EMAIL TEMPLATE*/
+
+    /**
+     * EMAIL TEMPLATE
+     */
     protected String readEmailFromHtml(String filePath, Map<String, String> input) {
         String msg = readContentFromFile(filePath);
         try {

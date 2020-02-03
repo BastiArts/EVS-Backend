@@ -97,10 +97,6 @@ public class Equipment implements Serializable {
         return id;
     }
 
-    /**
-     * Just some Getter and Setter for all existing fields in this class to make
-     * sure JPA can change and get the data correct from the server
-     */
     public void setId(long id) {
         this.id = id;
     }
@@ -127,54 +123,6 @@ public class Equipment implements Serializable {
 
     public void setBrand(String brand) {
         this.brand = brand;
-    }
-
-    public String getDisplayname() {
-        return displayname;
-    }
-
-    public void setDisplayname(String displayname) {
-        this.displayname = displayname;
-    }
-
-    public String getInterneNummer() {
-        return internenummer;
-    }
-
-    public void setInterneNummer(String internenummer) {
-        this.internenummer = internenummer;
-    }
-
-    public String getSerielNumber() {
-        return serialnumber;
-    }
-
-    public void setSerielNumber(String serielnumber) {
-        this.serialnumber = serielnumber;
-    }
-
-    public String[] getUsableClasses() {
-        return usableclasses;
-    }
-
-    public void setUsableClasses(String[] usableclasses) {
-        this.usableclasses = usableclasses;
-    }
-
-    public String getPhotoPath() {
-        return photopath;
-    }
-
-    public void setPhotoPath(String photopath) {
-        this.photopath = photopath;
-    }
-
-    public ArrayList<String> getSpecs() {
-        return specs;
-    }
-
-    public void setSpecs(ArrayList<String> specs) {
-        this.specs = specs;
     }
 
     public String getInternenummer() {
@@ -209,6 +157,22 @@ public class Equipment implements Serializable {
         this.photopath = photopath;
     }
 
+    public ArrayList<String> getSpecs() {
+        return specs;
+    }
+
+    public void setSpecs(ArrayList<String> specs) {
+        this.specs = specs;
+    }
+
+    public String getDisplayname() {
+        return displayname;
+    }
+
+    public void setDisplayname(String displayname) {
+        this.displayname = displayname;
+    }
+
     public String getLongname() {
         return longname;
     }
@@ -224,5 +188,11 @@ public class Equipment implements Serializable {
     public void setInventorynumber(String inventorynumber) {
         this.inventorynumber = inventorynumber;
     }
+
+    /**
+     * Just some Getter and Setter for all existing fields in this class to make
+     * sure JPA can change and get the data correct from the server
+     */
+    
 
 }

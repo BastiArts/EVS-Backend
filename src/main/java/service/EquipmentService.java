@@ -13,7 +13,10 @@ import entity.Equipment;
 import entity.LogEntry;
 import entity.User;
 import evs.ldapconnection.EVSColorizer;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -143,7 +147,7 @@ public class EquipmentService {
     public String insert(String equ) {
         Gson gson = new Gson();
         Equipment e = gson.fromJson(equ, Equipment.class);
-        e.setPhotoPath(findRightPicture(e.getCategory()));
+        e.setPhotopath(findRightPicture(e.getCategory()));
         e.setDisplayname(e.getBrand() + " " + e.getName());
         repo.add(e);
         return gson.toJson(e);
@@ -298,7 +302,7 @@ public class EquipmentService {
         try {
             saveToFile(uploadedInputStream, uploadedFileLocation);
             Equipment equ = repo.getEquBySer(serialnumber);
-            equ.setPhotoPath("http://vm88.htl-leonding.ac.at/" + uploadedFileLocation);
+            equ.setPhotopath("http://vm88.htl-leonding.ac.at/" + uploadedFileLocation);
             repo.update(equ);
         } catch (IOException e) {
             System.out.println("");
@@ -347,5 +351,71 @@ public class EquipmentService {
         if (!theDir.exists()) {
             theDir.mkdir();
         }
+    }
+    
+    /** HANNA PART */
+    /** NOT WORKING*/
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("exportAllLogs")
+    public String exportAllLogs() throws FileNotFoundException, IOException{
+        String logfilenames = sendlogs(); 
+        Gson gson = new Gson();
+        String[] files = gson.fromJson(logfilenames, String[].class);
+        FileOutputStream out = new FileOutputStream(new File("logs.xlsx"));
+        List<LogEntry> logentries = new ArrayList<>();
+        
+        for (String file : files) {
+            try {
+            List<String> alllines = Files.readAllLines(new File(file).toPath());
+            alllines.forEach(line ->{
+                String timestamp = line.substring(0, 19);
+                int linebegin = line.indexOf('[');
+                int lineend = line.indexOf(']');
+                String status = line.substring(linebegin + 1, lineend);
+                linebegin = lineend + 1;
+                lineend = line.indexOf('-') - 1;
+                String name = line.substring(linebegin, lineend);
+                String equname = line.substring(lineend + 2);
+                logentries.add(new LogEntry(timestamp, status, name, equname));
+            });
+            return new Gson().toJson(logentries);
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Some errors appeared sorry dude!");
+            return "failed!" + file;
+        }
+        }
+        Collections.reverse(logentries);
+         out.write(logentries.toString().getBytes());
+         out.close();   
+        
+        return null;
+        
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("exportEquipment")
+    public String exportEquipment() throws FileNotFoundException, IOException{
+      List<Equipment> allEquipment = repo.getEquipment();
+      StringBuilder sb = new StringBuilder();
+      sb.append("Marke;Name;Interne Nummer;Inventarnummer;Seriennummer")
+              .append("\n");
+      for(Equipment e : allEquipment){
+          sb.append(e.getBrand())
+                  .append(";")
+                  .append(e.getName())
+                  .append(";")
+                  .append(e.getInternenummer())
+                  .append(";")
+                  .append(e.getInventorynumber())
+                  .append(";")
+                  .append(e.getSerialnumber())
+                  .append("\n");
+      }
+      Files.write(new File("equipment.csv").toPath(), sb.toString().trim().getBytes("UTF-8"));
+       return null; 
     }
 }

@@ -5,6 +5,7 @@
  */
 package entity;
 
+import enums.RentType;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
@@ -26,6 +27,8 @@ public class Entlehnung implements Serializable {
     private long id;
     private Date fromdate;
     private Date todate;
+    private RentType eq_status;
+    @Deprecated
     private String status; // 4 types (pending - guarded - borrowed - returned)
     private boolean approved = false; // 
 
@@ -106,4 +109,13 @@ public class Entlehnung implements Serializable {
     public void setApproved(boolean approved) {
         this.approved = approved;
     }
+
+    public RentType getEq_status() {
+        return eq_status;
+    }
+
+    public void setEq_status(RentType eq_status) {
+        this.eq_status = eq_status;
+    }
+    
 }

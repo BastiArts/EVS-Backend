@@ -7,6 +7,7 @@ import evs.ldapconnection.EVSColorizer;
 import evs.ldapconnection.LdapAuthException;
 import evs.ldapconnection.LdapException;
 import evs.ldapconnection.LdapUser;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -139,9 +140,10 @@ public class Repository {
         }
 
     }
-    public List<User> allUsers = new LinkedList<>();
+    public List<User> allUsers = new ArrayList<>();
 
     public List<User> getAllStudents() {
+        System.out.println(EVSColorizer.RED + "USERS: " + allUsers.size() + EVSColorizer.RESET);
         return this.allUsers;
     }
 
@@ -233,7 +235,6 @@ public class Repository {
         em.getTransaction().begin();
         em.persist(e);
         em.getTransaction().commit();
-//        EmailUtil.getInstance().sendNotification(, "Test EVS", "Sers Des is a Test");
         return e;
     }
 
@@ -275,5 +276,11 @@ public class Repository {
         UserUtil.getInstance().setTeachers(q.getResultList());
         System.out.println(UserUtil.getInstance().getTeachers().size());
         em.getTransaction().commit();
+    }
+    public void updateEntlehnung(Entlehnung entl){
+        em.getTransaction().begin();
+            em.merge(entl);
+        em.getTransaction().commit();
+        
     }
 }

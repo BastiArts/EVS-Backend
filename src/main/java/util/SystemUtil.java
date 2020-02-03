@@ -5,13 +5,6 @@ import java.io.*;
 import java.nio.channels.Channels;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Properties;
-import java.util.logging.Level;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.glassfish.hk2.utilities.reflection.Logger;
 
 /**

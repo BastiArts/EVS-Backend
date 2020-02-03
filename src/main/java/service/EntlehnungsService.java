@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import entity.Entlehnung;
 import entity.Equipment;
 import entity.User;
+import enums.NotificationType;
 import enums.RentType;
 import evs.ldapconnection.EVSColorizer;
 
@@ -76,17 +77,17 @@ public class EntlehnungsService {
     ) throws ParseException {
         User user = repo.findUser(username);
         Equipment equ = repo.getEquBySer(serial);
+        Date fromdate1 = dateFormat.parse(fromdate);
+        Date todate1 = dateFormat.parse(todate);
+        Entlehnung entl = new Entlehnung(fromdate1, todate1, "pending", user, equ);
+        entl = repo.makeNewEntlehnung(entl);
         // SEND EMAIL TO TEACHER
         EmailUtil.getInstance().sendNotification(
                 String.join(",", UserUtil.getInstance()
                         .getTeachers()
                         .stream()
                         .map(User::getEmail).collect(Collectors.toList())),
-                "[EVS] Entlehnung", user.getFirstname() + " " + user.getLastname() + " hat eine Entlehnung für: " + equ.getDisplayname() + "(" + equ.getInterneNummer() + ") erstellt.");
-        Date fromdate1 = dateFormat.parse(fromdate);
-        Date todate1 = dateFormat.parse(todate);
-        Entlehnung entl = new Entlehnung(fromdate1, todate1, "pending", user, equ);
-        entl = repo.makeNewEntlehnung(entl);
+                NotificationType.REQUEST, equ, user, entl);
         return new Gson().toJson(entl);
     }
 
@@ -130,6 +131,10 @@ public class EntlehnungsService {
 
             e.setApproved(true);
             e = repo.confirmEntlehnung(e);
+
+            // SEND EMAIL TO TEACHER
+            EmailUtil.getInstance().sendNotification(e.getUser().getEmail(),
+                    NotificationType.CONFIRMATION_STUDENT, e.getEqu(), e.getUser(), e); // e.getUser --> sollte der Teacher sein-
             return new Gson().toJson(repo.findPendingEntlehnungen());
         } else {
             System.out.println(repo.declineEntlehnung(e));
@@ -167,4 +172,54 @@ public class EntlehnungsService {
         }
         return array.toString();
     }
+    @GET
+    @Path("getSingleEntlehnung/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getSingleEntl(@PathParam("id") long id){
+        Entlehnung entl = repo.findEntlehnung(id);
+        
+        return entl != null ? new Gson().toJson(entl) : "";
+    }
+
+    /**
+     * @author Sebastian Schiefermayr
+     * @param id - Entlehnungs ID
+     * @return - Confirm Message
+     */
+    @GET
+    @Path("retour/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String equipmentRetour(@PathParam("id") long id) {
+        Entlehnung entl = repo.findEntlehnung(id);
+        if (entl != null) {
+            // SEND EMAIL TO TEACHER
+            EmailUtil.getInstance().sendNotification(
+                    String.join(",", UserUtil.getInstance()
+                            .getTeachers()
+                            .stream()
+                            .map(User::getEmail).collect(Collectors.toList())),
+                    NotificationType.RETOUR, entl.getEqu(), entl.getUser(), entl);
+            return new Gson().toJson(entl);
+        }
+        return new JSONObject().put("status", "error").toString();
+    }
+    /**
+     * Gets triggered if the Teacher clicks on the Confirm-Link mail
+     * @param id - Entlehnungs id
+     * @return JSON-Entlehnung
+     */
+    @GET
+    @Path("confirmRetour/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String confirmRetour(@PathParam("id") long id){
+        Entlehnung entl = repo.findEntlehnung(id);
+        if(entl != null){
+            entl.setEq_status(RentType.RETOUR);
+            entl.setStatus("retour");
+            repo.updateEntlehnung(entl);
+            return new Gson().toJson(entl);
+        }
+        return "";
+    }
+
 }
